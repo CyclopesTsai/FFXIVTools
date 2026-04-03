@@ -4,99 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>多瑪飛地物資計算機</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f5f7;
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
-        }
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        h2 {
-            text-align: center;
-            color: #2c3e50;
-            margin-top: 0;
-        }
-        .form-group {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #eee;
-        }
-        .form-group label {
-            font-weight: 500;
-        }
-        .form-group input {
-            width: 100px;
-            padding: 6px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            text-align: right;
-            font-size: 16px;
-        }
-        .settings {
-            background-color: #eef2f5;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            margin-top: 20px;
-        }
-        .settings .form-group {
-            border-bottom: none;
-            margin-bottom: 8px;
-        }
-        button {
-            width: 100%;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        #results {
-            margin-top: 20px;
-        }
-        .solution-card {
-            background: #fdfdfd;
-            border-left: 5px solid #2ecc71;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .solution-card h3 {
-            margin-top: 0;
-            color: #27ae60;
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        .solution-card ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-        .warning {
-            color: #e74c3c;
-            font-weight: bold;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="css/doma.css">
 </head>
 <body>
 
@@ -140,6 +48,8 @@
     <button onclick="calculate()">計算最佳 Top 3 方案</button>
 
     <div id="results"></div>
+
+    <a href="index.html" class="back-link">← 返回導航頁</a>
 </div>
 
 <script>
@@ -152,10 +62,10 @@ function calculate() {
         parseInt(document.getElementById('c100').value) || 0,
         parseInt(document.getElementById('c25').value) || 0
     ];
-    
+
     const budget = parseInt(document.getElementById('budget').value) || 25000;
     const ratio = parseFloat(document.getElementById('ratio').value) || 200;
-    
+
     const baseValues = [10000, 2500, 500, 100, 25];
     const multiplier = ratio / 100;
     const effValues = baseValues.map(v => v * multiplier); // 計算收購加成後的實際價值
@@ -197,7 +107,7 @@ function calculate() {
 
         let val = effValues[index];
         let maxAvailable = counts[index];
-        
+
         // 貪婪優化：計算「至少」還需要幾個當前硬幣才能達到預算
         let needed = Math.ceil((budget - currentSum) / val);
         let maxToTry = Math.min(maxAvailable, needed);
@@ -242,20 +152,20 @@ function calculate() {
     // 渲染結果畫面
     resultsDiv.innerHTML = '';
     const labels = ['白金幣 (10,000)', '金幣 (2,500)', '銀幣 (500)', '銅幣 (100)', '錫幣 (25)'];
-    
+
     uniqueCombos.forEach((c, index) => {
         let html = `
         <div class="solution-card">
             <h3>Top ${index + 1} 方案 🏆 (溢出浪費: ${c.waste} 價值)</h3>
             <p style="margin-top: 0; color: #555;">總提交價值: <b>${c.sum}</b> / ${budget}</p>
             <ul>`;
-        
+
         c.combo.forEach((qty, i) => {
             if (qty > 0) {
                 html += `<li>繳交 <b>${qty}</b> 個 ${labels[i]}</li>`;
             }
         });
-        
+
         html += `</ul></div>`;
         resultsDiv.innerHTML += html;
     });
