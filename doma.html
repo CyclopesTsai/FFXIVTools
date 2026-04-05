@@ -9,7 +9,7 @@
 <body>
 
 <div class="container">
-    <h2>💰 多瑪飛地最佳化計算機</h2>
+    <h2>多瑪飛地最佳化計算機</h2>
 
     <div>
         <div class="form-group">
@@ -36,11 +36,11 @@
 
     <div class="settings">
         <div class="form-group">
-            <label>📊 週預算上限</label>
+            <label>週預算上限</label>
             <input type="number" id="budget" min="1" value="25000">
         </div>
         <div class="form-group">
-            <label>📈 價格比率 (%)</label>
+            <label>價格比率 (%)</label>
             <input type="number" id="ratio" min="100" value="200">
         </div>
     </div>
@@ -78,7 +78,7 @@ function calculate() {
     if (totalPossibleSum < budget) {
         resultsDiv.innerHTML = `
             <div class="solution-card" style="border-left-color: #e74c3c;">
-                <p class="warning">⚠️ 你的硬幣總價值 (${totalPossibleSum}) 不足以填滿預算 (${budget})。</p>
+                <p class="warning">你的硬幣總價值 (${totalPossibleSum}) 不足以填滿預算 (${budget})。</p>
                 <p>建議：全數繳交即可。</p>
             </div>`;
         return;
@@ -156,7 +156,7 @@ function calculate() {
     uniqueCombos.forEach((c, index) => {
         let html = `
         <div class="solution-card">
-            <h3>Top ${index + 1} 方案 🏆 (溢出浪費: ${c.waste} 價值)</h3>
+            <h3>Top ${index + 1} 方案 (溢出浪費: ${c.waste} 價值)</h3>
             <p style="margin-top: 0; color: #555;">總提交價值: <b>${c.sum}</b> / ${budget}</p>
             <ul>`;
 
