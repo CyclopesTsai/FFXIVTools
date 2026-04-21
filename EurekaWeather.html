@@ -4,38 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>優雷卡天氣預測站 - 精準同步版</title>
-  <style>
-    :root { --primary: #e67e22; --bg: #1a1a1a; --card: #2c3e50; --text: #ecf0f1; --accent: #3498db; }
-    body { font-family: "Microsoft JhengHei", sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-    h1 { color: var(--primary); margin-bottom: 5px; }
-    p.subtitle { color: #95a5a6; font-size: 0.9em; margin-top: 0; margin-bottom: 20px; }
-    .controls { margin-bottom: 20px; }
-    select { padding: 12px 20px; font-size: 16px; border-radius: 5px; background: var(--card); color: white; border: 1px solid var(--primary); cursor: pointer; outline: none; }
-    .forecast-container { width: 100%; max-width: 700px; }
-    .weather-row { display: flex; align-items: center; background: var(--card); margin-bottom: 8px; padding: 15px; border-radius: 8px; border-left: 5px solid transparent; transition: 0.2s; }
-    .weather-row.active { border-left-color: #27ae60; background: #34495e; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-    .time-box { flex: 1.5; font-weight: bold; color: #bdc3c7; display: flex; flex-direction: column; }
-    .et-time { font-size: 0.85em; color: var(--accent); margin-top: 4px; }
-    .weather-name { flex: 2; text-align: center; font-size: 1.1em; letter-spacing: 1px; }
-    .weather-val { flex: 1; text-align: right; color: #7f8c8d; font-family: monospace; font-size: 0.9em; }
-    .special-weather { color: #f1c40f; font-weight: bold; text-shadow: 0 0 8px rgba(241, 196, 15, 0.4); }
-  </style>
+  <link rel="stylesheet" href="css/eureka.css">
 </head>
 <body>
 
-<h1>禁地優雷卡 天氣預報</h1>
-<p class="subtitle">已與 Eorzea Time 精準同步</p>
+<div class="container">
+  <h1>禁地優雷卡 天氣預報</h1>
+  <p class="subtitle">Eorzea Weather Forecast</p>
 
-<div class="controls">
-  <select id="zoneSelect" onchange="renderForecast()">
-    <option value="anemos">常風之地 (Anemos)</option>
-    <option value="pagos">恆冰之地 (Pagos)</option>
-    <option value="pyros">湧火之地 (Pyros)</option>
-    <option value="hydatos">豐水之地 (Hydatos)</option>
-  </select>
+  <div class="controls">
+    <select id="zoneSelect" onchange="changeZone()">
+      <option value="anemos">常風之地 (Anemos)</option>
+      <option value="pagos">恆冰之地 (Pagos)</option>
+      <option value="pyros">湧火之地 (Pyros)</option>
+      <option value="hydatos">豐水之地 (Hydatos)</option>
+    </select>
+  </div>
+
+  <div id="forecast" class="forecast-container"></div>
+
+  <a href="index.html" class="back-link">← 返回導航頁</a>
 </div>
-
-<div id="forecast" class="forecast-container"></div>
 
 <script>
   const DATA = {
@@ -101,17 +90,26 @@
     return `ET ${etHour.toString().padStart(2, '0')}:00`;
   }
 
-  function renderForecast() {
+  function renderForecast(force = false) {
     const zone = document.getElementById('zoneSelect').value;
     const container = document.getElementById('forecast');
-    container.innerHTML = '';
 
+    // 獲取當前時間
     const nowMS = Date.now();
     // 艾歐澤亞天氣每 1400 秒 (23分20秒) 變換一次
     const weatherBlockMS = 1400 * 1000;
-
-    // 計算當前這輪天氣是從幾點幾分開始的 (對齊 1400 秒的整數倍)
+    // 計算當前這輪天氣是從幾點幾分開始的
     const currentBlockStartMS = Math.floor(nowMS / weatherBlockMS) * weatherBlockMS;
+
+    // 檢查是否需要重新渲染所有內容
+    const lastUpdate = container.getAttribute('data-last-block');
+    if (!force && lastUpdate === currentBlockStartMS.toString() && container.children.length > 0) {
+      // 只需要更新「現在」標籤的時間顯示（如果有的話）
+      return;
+    }
+
+    container.innerHTML = '';
+    container.setAttribute('data-last-block', currentBlockStartMS);
 
     for (let i = 0; i < 20; i++) {
       // 計算未來每個區塊的時間戳記
@@ -148,9 +146,24 @@
     }
   }
 
-  // 初始渲染並設定每分鐘更新
-  renderForecast();
-  setInterval(renderForecast, 60000);
+  function changeZone() {
+    const zone = document.getElementById('zoneSelect').value;
+    localStorage.setItem('eureka-zone', zone);
+    renderForecast(true);
+  }
+
+  function init() {
+    const savedZone = localStorage.getItem('eureka-zone');
+    if (savedZone && DATA[savedZone]) {
+      document.getElementById('zoneSelect').value = savedZone;
+    }
+    renderForecast();
+  }
+
+  // 初始渲染
+  init();
+  // 每 10 秒檢查一次是否需要更新（確保跨過 1400s 邊界時能及時刷新）
+  setInterval(renderForecast, 10000);
 </script>
 
 </body>
