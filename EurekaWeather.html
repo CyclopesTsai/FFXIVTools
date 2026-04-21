@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>優雷卡天氣預測站 - 精準同步版</title>
+  <style>
+    :root { --primary: #e67e22; --bg: #1a1a1a; --card: #2c3e50; --text: #ecf0f1; --accent: #3498db; }
+    body { font-family: "Microsoft JhengHei", sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+    h1 { color: var(--primary); margin-bottom: 5px; }
+    p.subtitle { color: #95a5a6; font-size: 0.9em; margin-top: 0; margin-bottom: 20px; }
+    .controls { margin-bottom: 20px; }
+    select { padding: 12px 20px; font-size: 16px; border-radius: 5px; background: var(--card); color: white; border: 1px solid var(--primary); cursor: pointer; outline: none; }
+    .forecast-container { width: 100%; max-width: 700px; }
+    .weather-row { display: flex; align-items: center; background: var(--card); margin-bottom: 8px; padding: 15px; border-radius: 8px; border-left: 5px solid transparent; transition: 0.2s; }
+    .weather-row.active { border-left-color: #27ae60; background: #34495e; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+    .time-box { flex: 1.5; font-weight: bold; color: #bdc3c7; display: flex; flex-direction: column; }
+    .et-time { font-size: 0.85em; color: var(--accent); margin-top: 4px; }
+    .weather-name { flex: 2; text-align: center; font-size: 1.1em; letter-spacing: 1px; }
+    .weather-val { flex: 1; text-align: right; color: #7f8c8d; font-family: monospace; font-size: 0.9em; }
+    .special-weather { color: #f1c40f; font-weight: bold; text-shadow: 0 0 8px rgba(241, 196, 15, 0.4); }
+  </style>
+</head>
+<body>
+
+<h1>禁地優雷卡 天氣預報</h1>
+<p class="subtitle">已與 Eorzea Time 精準同步</p>
+
+<div class="controls">
+  <select id="zoneSelect" onchange="renderForecast()">
+    <option value="anemos">常風之地 (Anemos)</option>
+    <option value="pagos">恆冰之地 (Pagos)</option>
+    <option value="pyros">湧火之地 (Pyros)</option>
+    <option value="hydatos">豐水之地 (Hydatos)</option>
+  </select>
+</div>
+
+<div id="forecast" class="forecast-container"></div>
+
+<script>
+  const DATA = {
+    anemos: [
+      { threshold: 30, name: "碧空 (Fair Skies)", icon: "☀️" },
+      { threshold: 60, name: "晴朗 (Clear Skies)", icon: "🌤️" },
+      { threshold: 90, name: "暴風 (Gales)", icon: "🌪️", special: true },
+      { threshold: 100, name: "小雨 (Showers)", icon: "🌧️" }
+    ],
+    pagos: [
+      { threshold: 10, name: "晴朗 (Clear Skies)", icon: "🌤️" },
+      { threshold: 28, name: "薄霧 (Fog)", icon: "🌫️" },
+      { threshold: 46, name: "熱浪 (Heat Waves)", icon: "🔥", special: true },
+      { threshold: 64, name: "小雪 (Snow)", icon: "❄️" },
+      { threshold: 82, name: "暴雪 (Blizzards)", icon: "🌨️", special: true },
+      { threshold: 100, name: "雷雨 (Thunderstorms)", icon: "⛈️" }
+    ],
+    pyros: [
+      { threshold: 10, name: "碧空 (Fair Skies)", icon: "☀️" },
+      { threshold: 28, name: "熱浪 (Heat Waves)", icon: "🔥", special: true },
+      { threshold: 46, name: "打雷 (Thunder)", icon: "⚡", special: true },
+      { threshold: 64, name: "薄霧 (Fog)", icon: "🌫️" },
+      { threshold: 82, name: "小雪 (Snow)", icon: "❄️" },
+      { threshold: 100, name: "暴雪 (Blizzards)", icon: "🌨️", special: true }
+    ],
+    hydatos: [
+      { threshold: 12, name: "碧空 (Fair Skies)", icon: "☀️" },
+      { threshold: 34, name: "晴朗 (Clear Skies)", icon: "🌤️" },
+      { threshold: 56, name: "雷雨 (Thunderstorms)", icon: "⛈️", special: true },
+      { threshold: 78, name: "薄霧 (Fog)", icon: "🌫️" },
+      { threshold: 100, name: "小雪 (Snow)", icon: "❄️" }
+    ]
+  };
+
+  // FF14 標準天氣數值演算公式 (已修正為包含艾歐澤亞天數的標準算法)
+  function calculateFFXIVWeatherValue(timestampMillis) {
+    const unixSeconds = Math.floor(timestampMillis / 1000);
+
+    // 取得當前時間對應的艾歐澤亞小時 (每175秒 = 1艾歐澤亞小時)
+    const bell = Math.floor(unixSeconds / 175);
+
+    // 計算天氣週期 (0, 8, 16)
+    const increment = (bell + 8 - (bell % 8)) % 24;
+
+    // 取得自 Epoch 以來的艾歐澤亞天數 (每4200秒 = 1艾歐澤亞天)
+    const totalDays = Math.floor(unixSeconds / 4200);
+
+    // 組合出 Base Hash 數值
+    const calcBase = (totalDays * 100) + increment;
+
+    // 執行 32-bit 位移運算
+    let step1 = ((calcBase << 11) ^ calcBase) >>> 0;
+    let step2 = ((step1 >>> 8) ^ step1) >>> 0;
+
+    return step2 % 100;
+  }
+
+  // 將時間戳轉換為艾歐澤亞時間字串 (ET)
+  function getEorzeaTimeStr(timestampMillis) {
+    const unixSeconds = Math.floor(timestampMillis / 1000);
+    const bell = Math.floor(unixSeconds / 175);
+    const etHour = bell % 24;
+    return `ET ${etHour.toString().padStart(2, '0')}:00`;
+  }
+
+  function renderForecast() {
+    const zone = document.getElementById('zoneSelect').value;
+    const container = document.getElementById('forecast');
+    container.innerHTML = '';
+
+    const nowMS = Date.now();
+    // 艾歐澤亞天氣每 1400 秒 (23分20秒) 變換一次
+    const weatherBlockMS = 1400 * 1000;
+
+    // 計算當前這輪天氣是從幾點幾分開始的 (對齊 1400 秒的整數倍)
+    const currentBlockStartMS = Math.floor(nowMS / weatherBlockMS) * weatherBlockMS;
+
+    for (let i = 0; i < 20; i++) {
+      // 計算未來每個區塊的時間戳記
+      const targetTimeMS = currentBlockStartMS + (i * weatherBlockMS);
+
+      // 算出準確的 0-99 數值
+      const val = calculateFFXIVWeatherValue(targetTimeMS);
+
+      // 對照表找出天氣
+      const zoneData = DATA[zone];
+      let weather = { name: "未知", icon: "?" };
+      for (let w of zoneData) {
+        if (val < w.threshold) { weather = w; break; }
+      }
+
+      // 建立 UI 元素
+      const startTime = new Date(targetTimeMS);
+      const row = document.createElement('div');
+      row.className = 'weather-row' + (i === 0 ? ' active' : '');
+
+      const timeStr = startTime.toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' });
+      const etStr = getEorzeaTimeStr(targetTimeMS);
+      const isSpecial = weather.special ? 'class="special-weather"' : '';
+
+      row.innerHTML = `
+                <div class="time-box">
+                    <span>${i === 0 ? '現在 (LT ' + timeStr + ')' : timeStr}</span>
+                    <span class="et-time">${etStr}</span>
+                </div>
+                <div class="weather-name" ${isSpecial}>${weather.icon} ${weather.name}</div>
+                <div class="weather-val">Val: ${val}</div>
+            `;
+      container.appendChild(row);
+    }
+  }
+
+  // 初始渲染並設定每分鐘更新
+  renderForecast();
+  setInterval(renderForecast, 60000);
+</script>
+
+</body>
+</html>
