@@ -106,6 +106,15 @@
     if (!force && lastUpdate === currentBlockStartMS.toString() && container.children.length > 0) {
       const countdownEl = container.querySelector('.weather-row.active .countdown');
       if (countdownEl) countdownEl.innerText = `剩餘 ${countdownStr}`;
+
+      // 同步更新所有後續時段的「幾分後」字樣
+      container.querySelectorAll('.relative-time').forEach(el => {
+        const target = parseInt(el.getAttribute('data-target'));
+        const dSec = Math.floor((target - nowMS) / 1000);
+        const dH = Math.floor(dSec / 3600);
+        const dM = Math.floor((dSec % 3600) / 60);
+        el.innerText = `(${dH > 0 ? dH + '時' : ''}${dM}分後)`;
+      });
       return;
     }
 
@@ -127,14 +136,13 @@
       const row = document.createElement('div');
       row.className = 'weather-row' + (i === 0 ? ' active' : '');
 
-      const diffMS = targetTimeMS - nowMS;
-      const diffTotalSec = Math.floor(diffMS / 1000);
-      const diffH = Math.floor(diffTotalSec / 3600);
-      const diffM = Math.floor((diffTotalSec % 3600) / 60);
+      const diffSec = Math.floor((targetTimeMS - nowMS) / 1000);
+      const diffH = Math.floor(diffSec / 3600);
+      const diffM = Math.floor((diffSec % 3600) / 60);
 
-      let relativeStr = "";
+      let relativeHtml = "";
       if (i > 0) {
-        relativeStr = ` <small style="opacity: 0.6; font-weight: normal;">(${diffH > 0 ? diffH + '時' : ''}${diffM}分後)</small>`;
+        relativeHtml = ` <small class="relative-time" data-target="${targetTimeMS}" style="opacity: 0.6; font-weight: normal;">(${diffH > 0 ? diffH + '時' : ''}${diffM}分後)</small>`;
       }
 
       const timeStr = startTime.toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' });
@@ -143,7 +151,7 @@
 
       row.innerHTML = `
                 <div class="time-box">
-                    <span>${i === 0 ? '現在 (' + timeStr + ')' : timeStr + relativeStr}</span>
+                    <span>${i === 0 ? '現在 (' + timeStr + ')' : timeStr + relativeHtml}</span>
                     <span class="et-time">${etStr}</span>
                 </div>
                 <div class="weather-name" ${isSpecial}>
