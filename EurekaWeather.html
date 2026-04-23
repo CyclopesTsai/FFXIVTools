@@ -29,55 +29,52 @@
 <script>
   const DATA = {
     anemos: [
-      { threshold: 30, name: "碧空 (Fair Skies)", icon: "☀️" },
-      { threshold: 60, name: "晴朗 (Clear Skies)", icon: "🌤️" },
-      { threshold: 90, name: "暴風 (Gales)", icon: "🌪️", special: true },
-      { threshold: 100, name: "小雨 (Showers)", icon: "🌧️" }
+      { threshold: 30, name: "晴朗", icon: "☀️" },
+      { threshold: 60, name: "強風", icon: "🌤️" },
+      { threshold: 90, name: "暴雨", icon: "🌪️", special: true },
+      { threshold: 100, name: "小雪", icon: "🌧️" }
     ],
     pagos: [
-      { threshold: 10, name: "晴朗 (Clear Skies)", icon: "🌤️" },
-      { threshold: 28, name: "薄霧 (Fog)", icon: "🌫️" },
-      { threshold: 46, name: "熱浪 (Heat Waves)", icon: "🔥", special: true },
-      { threshold: 64, name: "小雪 (Snow)", icon: "❄️" },
-      { threshold: 82, name: "暴雪 (Blizzards)", icon: "🌨️", special: true },
-      { threshold: 100, name: "雷雨 (Thunderstorms)", icon: "⛈️" }
+      { threshold: 10, name: "晴朗", icon: "🌤️" },
+      { threshold: 28, name: "薄霧", icon: "🌫️" },
+      { threshold: 46, name: "熱浪", icon: "🔥", special: true },
+      { threshold: 64, name: "小雪", icon: "❄️" },
+      { threshold: 82, name: "打雷", icon: "⛈️", special: true },
+      { threshold: 100, name: "暴雪", icon: "🌨️", special: true }
     ],
     pyros: [
-      { threshold: 10, name: "碧空 (Fair Skies)", icon: "☀️" },
-      { threshold: 28, name: "熱浪 (Heat Waves)", icon: "🔥", special: true },
-      { threshold: 46, name: "打雷 (Thunder)", icon: "⚡", special: true },
-      { threshold: 64, name: "薄霧 (Fog)", icon: "🌫️" },
-      { threshold: 82, name: "小雪 (Snow)", icon: "❄️" },
-      { threshold: 100, name: "暴雪 (Blizzards)", icon: "🌨️", special: true }
+      { threshold: 10, name: "晴朗", icon: "☀️" },
+      { threshold: 28, name: "熱浪", icon: "🔥", special: true },
+      { threshold: 46, name: "打雷", icon: "⚡", special: true },
+      { threshold: 64, name: "暴雪", icon: "🌫️" },
+      { threshold: 82, name: "靈風", icon: "❄️" },
+      { threshold: 100, name: "小雪", icon: "🌨️", special: true }
     ],
     hydatos: [
-      { threshold: 12, name: "碧空 (Fair Skies)", icon: "☀️" },
-      { threshold: 34, name: "晴朗 (Clear Skies)", icon: "🌤️" },
-      { threshold: 56, name: "雷雨 (Thunderstorms)", icon: "⛈️", special: true },
-      { threshold: 78, name: "薄霧 (Fog)", icon: "🌫️" },
-      { threshold: 100, name: "小雪 (Snow)", icon: "❄️" }
+      { threshold: 12, name: "晴朗", icon: "☀️" },
+      { threshold: 34, name: "暴雨", icon: "🌤️" },
+      { threshold: 56, name: "妖霧", icon: "⛈️", special: true },
+      { threshold: 78, name: "雷雨", icon: "🌫️" },
+      { threshold: 100, name: "小雪", icon: "❄️" }
     ]
   };
 
-  // FF14 標準天氣數值演算公式 (已修正為包含艾歐澤亞天數的標準算法)
+  // FF14 標準天氣數值演算公式 (嚴格同步標準算法)
   function calculateFFXIVWeatherValue(timestampMillis) {
     const unixSeconds = Math.floor(timestampMillis / 1000);
-
-    // 取得當前時間對應的艾歐澤亞小時 (每175秒 = 1艾歐澤亞小時)
+    // 關鍵：FF14 的天氣算法是基於該天氣區段「結束」時的小時數 (Bell)
+    // 00:00 的天氣由 08:00 的 bell 決定 (inc 8)
+    // 08:00 的天氣由 16:00 的 bell 決定 (inc 16)
+    // 16:00 的天氣由 00:00 的 bell 決定 (inc 0)
     const bell = Math.floor(unixSeconds / 175);
-
-    // 計算天氣週期 (0, 8, 16)
     const increment = (bell + 8 - (bell % 8)) % 24;
 
-    // 取得自 Epoch 以來的艾歐澤亞天數 (每4200秒 = 1艾歐澤亞天)
-    const totalDays = Math.floor(unixSeconds / 4200);
-
-    // 組合出 Base Hash 數值
+    // 總天數計算
+    const totalDays = Math.floor(unixSeconds / 4200) >>> 0;
     const calcBase = (totalDays * 100) + increment;
 
-    // 執行 32-bit 位移運算
-    let step1 = ((calcBase << 11) ^ calcBase) >>> 0;
-    let step2 = ((step1 >>> 8) ^ step1) >>> 0;
+    const step1 = ((calcBase << 11) ^ calcBase) >>> 0;
+    const step2 = ((step1 >>> 8) ^ step1) >>> 0;
 
     return step2 % 100;
   }
@@ -94,17 +91,21 @@
     const zone = document.getElementById('zoneSelect').value;
     const container = document.getElementById('forecast');
 
-    // 獲取當前時間
     const nowMS = Date.now();
-    // 艾歐澤亞天氣每 1400 秒 (23分20秒) 變換一次
     const weatherBlockMS = 1400 * 1000;
-    // 計算當前這輪天氣是從幾點幾分開始的
+
+    // 精確對齊到當前天氣塊的起點
     const currentBlockStartMS = Math.floor(nowMS / weatherBlockMS) * weatherBlockMS;
 
-    // 檢查是否需要重新渲染所有內容
+    const remainingSeconds = Math.floor((currentBlockStartMS + weatherBlockMS - nowMS) / 1000);
+    const mm = Math.floor(remainingSeconds / 60);
+    const ss = remainingSeconds % 60;
+    const countdownStr = `${mm}:${ss.toString().padStart(2, '0')}`;
+
     const lastUpdate = container.getAttribute('data-last-block');
     if (!force && lastUpdate === currentBlockStartMS.toString() && container.children.length > 0) {
-      // 只需要更新「現在」標籤的時間顯示（如果有的話）
+      const countdownEl = container.querySelector('.weather-row.active .countdown');
+      if (countdownEl) countdownEl.innerText = `剩餘 ${countdownStr}`;
       return;
     }
 
@@ -112,23 +113,29 @@
     container.setAttribute('data-last-block', currentBlockStartMS);
 
     for (let i = 0; i < 20; i++) {
-      // 計算未來每個區塊的時間戳記
       const targetTimeMS = currentBlockStartMS + (i * weatherBlockMS);
-
-      // 算出準確的 0-99 數值
+      // 使用該區段的起始時間進行計算
       const val = calculateFFXIVWeatherValue(targetTimeMS);
-
-      // 對照表找出天氣
       const zoneData = DATA[zone];
+
       let weather = { name: "未知", icon: "?" };
       for (let w of zoneData) {
         if (val < w.threshold) { weather = w; break; }
       }
 
-      // 建立 UI 元素
       const startTime = new Date(targetTimeMS);
       const row = document.createElement('div');
       row.className = 'weather-row' + (i === 0 ? ' active' : '');
+
+      const diffMS = targetTimeMS - nowMS;
+      const diffTotalSec = Math.floor(diffMS / 1000);
+      const diffH = Math.floor(diffTotalSec / 3600);
+      const diffM = Math.floor((diffTotalSec % 3600) / 60);
+
+      let relativeStr = "";
+      if (i > 0) {
+        relativeStr = ` <small style="opacity: 0.6; font-weight: normal;">(${diffH > 0 ? diffH + '時' : ''}${diffM}分後)</small>`;
+      }
 
       const timeStr = startTime.toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' });
       const etStr = getEorzeaTimeStr(targetTimeMS);
@@ -136,10 +143,13 @@
 
       row.innerHTML = `
                 <div class="time-box">
-                    <span>${i === 0 ? '現在 (LT ' + timeStr + ')' : timeStr}</span>
+                    <span>${i === 0 ? '現在 (LT ' + timeStr + ')' : timeStr + relativeStr}</span>
                     <span class="et-time">${etStr}</span>
                 </div>
-                <div class="weather-name" ${isSpecial}>${weather.icon} ${weather.name}</div>
+                <div class="weather-name" ${isSpecial}>
+                  ${weather.icon} ${weather.name}
+                  ${i === 0 ? `<div class="countdown" style="font-size: 0.7em; font-weight: normal; color: #27ae60; margin-top: 2px;">剩餘 ${countdownStr}</div>` : ''}
+                </div>
                 <div class="weather-val">Val: ${val}</div>
             `;
       container.appendChild(row);
@@ -162,8 +172,8 @@
 
   // 初始渲染
   init();
-  // 每 10 秒檢查一次是否需要更新（確保跨過 1400s 邊界時能及時刷新）
-  setInterval(renderForecast, 10000);
+  // 每 1 秒檢查一次以更新倒數計時
+  setInterval(renderForecast, 1000);
 </script>
 
 </body>
