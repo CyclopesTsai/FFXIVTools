@@ -10,21 +10,20 @@
 <body>
 
 <div class="container">
+  <a href="index.html" class="back-link">← 返回導航頁</a>
   <h1>禁地優雷卡 天氣預報</h1>
-  <p class="subtitle">Eorzea Weather Forecast</p>
+  <p class="subtitle">Eureka Weather Forecast</p>
 
   <div class="controls">
     <select id="zoneSelect" onchange="changeZone()">
-      <option value="anemos">常風之地 (Anemos)</option>
-      <option value="pagos">恆冰之地 (Pagos)</option>
-      <option value="pyros">湧火之地 (Pyros)</option>
-      <option value="hydatos">豐水之地 (Hydatos)</option>
+      <option value="anemos">常風之地</option>
+      <option value="pagos">恆冰之地</option>
+      <option value="pyros">湧火之地</option>
+      <option value="hydatos">豐水之地</option>
     </select>
   </div>
 
   <div id="forecast" class="forecast-container"></div>
-
-  <a href="index.html" class="back-link">← 返回導航頁</a>
 </div>
 
 <script>
