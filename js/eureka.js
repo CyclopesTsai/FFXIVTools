@@ -1,32 +1,3 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>優雷卡天氣預測</title>
-  <link rel="stylesheet" href="css/eureka.css">
-  <script src="js/ga.js"></script>
-</head>
-<body>
-
-<div class="container">
-  <a href="index.html" class="back-link">← 返回導航頁</a>
-  <h1>禁地優雷卡 天氣預報</h1>
-  <p class="subtitle">Eureka Weather Forecast</p>
-
-  <div class="controls">
-    <select id="zoneSelect" onchange="changeZone()">
-      <option value="anemos">常風之地</option>
-      <option value="pagos">恆冰之地</option>
-      <option value="pyros">湧火之地</option>
-      <option value="hydatos">豐水之地</option>
-    </select>
-  </div>
-
-  <div id="forecast" class="forecast-container"></div>
-</div>
-
-<script>
   const DATA = {
     anemos: [
       { threshold: 30, name: "晴朗", icon: "☀️" },
@@ -182,7 +153,3 @@
   init();
   // 每 1 秒檢查一次以更新倒數計時
   setInterval(renderForecast, 1000);
-</script>
-
-</body>
-</html>
