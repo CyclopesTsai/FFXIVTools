@@ -1,4 +1,6 @@
 (function () {
+    // 四個禁地地帶的天氣表：threshold 是該天氣在 0~99 演算值中的累計上界（由小到大比對，
+    // 第一個 val 小於 threshold 的項目就是命中的天氣），special 標記稀有天氣
     const DATA = {
         anemos: [
             { threshold: 30, name: "晴朗", icon: "☀️" },
@@ -38,7 +40,7 @@
 
     let zoneSelect;
     let container;
-    let lastBlockStartMS = null;
+    let lastBlockStartMS = null; // 上一次完整渲染時對齊到的天氣區塊起點，用來判斷這次是否還在同一區塊內
 
     // FF14 標準天氣數值演算公式 (嚴格同步標準算法)
     function calculateFFXIVWeatherValue(timestampMillis) {
@@ -54,6 +56,7 @@
         const totalDays = Math.floor(unixSeconds / 4200) >>> 0;
         const calcBase = (totalDays * 100) + increment;
 
+        // 遊戲內建的偽隨機位元運算，刻意保留 32 位元整數溢位行為以對齊原始演算法
         const step1 = ((calcBase << 11) ^ calcBase) >>> 0;
         const step2 = ((step1 >>> 8) ^ step1) >>> 0;
 
@@ -68,6 +71,8 @@
         return `ET ${etHour.toString().padStart(2, '0')}:00`;
     }
 
+    // 渲染天氣預報列表。force=false 時，若仍在同一天氣區塊內，只更新倒數秒數與「幾分後」文字，
+    // 避免每秒都整個重新產生 20 列 DOM
     function renderForecast(force = false) {
         const zone = zoneSelect.value;
 
@@ -81,6 +86,7 @@
         const ss = remainingSeconds % 60;
         const countdownStr = `${mm}:${ss.toString().padStart(2, '0')}`;
 
+        // 快速路徑：還在同一個天氣區塊內，不用重繪整個列表
         if (!force && lastBlockStartMS === currentBlockStartMS && container.children.length > 0) {
             const countdownEl = container.querySelector('.weather-row.active .countdown');
             if (countdownEl) countdownEl.innerText = `剩餘 ${countdownStr}`;
@@ -88,14 +94,15 @@
             // 同步更新所有後續時段的「幾分後」字樣
             container.querySelectorAll('.relative-time').forEach(el => {
                 const target = parseInt(el.getAttribute('data-target'));
-                const dSec = Math.floor((target - nowMS) / 1000);
-                const dH = Math.floor(dSec / 3600);
-                const dM = Math.floor((dSec % 3600) / 60);
-                el.innerText = `(${dH > 0 ? dH + '時' : ''}${dM}分後)`;
+                const diffSec = Math.floor((target - nowMS) / 1000);
+                const diffH = Math.floor(diffSec / 3600);
+                const diffM = Math.floor((diffSec % 3600) / 60);
+                el.innerText = `(${diffH > 0 ? diffH + '時' : ''}${diffM}分後)`;
             });
             return;
         }
 
+        // 完整重繪：換天氣區塊或切換地帶時，重新產生所有列
         container.innerHTML = '';
         lastBlockStartMS = currentBlockStartMS;
 
@@ -105,6 +112,7 @@
             const val = calculateFFXIVWeatherValue(targetTimeMS);
             const zoneData = DATA[zone];
 
+            // 依 threshold 由小到大找出對應天氣
             let weather = { name: "未知", icon: "?" };
             for (let w of zoneData) {
                 if (val < w.threshold) { weather = w; break; }
@@ -142,6 +150,7 @@
         }
     }
 
+    // 切換地帶：記住這次的選擇，並強制整個重繪
     function changeZone() {
         localStorage.setItem('eureka-zone', zoneSelect.value);
         renderForecast(true);
@@ -152,6 +161,7 @@
         container = document.getElementById('forecast');
         zoneSelect.addEventListener('change', changeZone);
 
+        // 還原上次選擇的地帶
         const savedZone = localStorage.getItem('eureka-zone');
         if (savedZone && DATA[savedZone]) {
             zoneSelect.value = savedZone;
