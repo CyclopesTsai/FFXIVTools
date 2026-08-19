@@ -1,9 +1,12 @@
+(function () {
     const gridEl = document.getElementById('grid');
     const countEl = document.getElementById('sticker-count');
     const suggestionEl = document.getElementById('suggestion-area');
     const resultsEl = document.getElementById('results-area');
+    const resetBtn = document.getElementById('reset-btn');
 
     let selectedCells = [];
+    let cellEls = [];
 
     const winningLines = [
         [0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15],
@@ -15,10 +18,11 @@
         for (let i = 0; i < 16; i++) {
             const cell = document.createElement('div');
             cell.className = 'cell';
-            cell.dataset.index = i;
             cell.addEventListener('click', () => toggleCell(i));
             gridEl.appendChild(cell);
+            cellEls.push(cell);
         }
+        resetBtn.addEventListener('click', resetGrid);
     }
 
     function toggleCell(index) {
@@ -39,8 +43,7 @@
     }
 
     function updateUI() {
-        const cells = document.querySelectorAll('.cell');
-        cells.forEach((cell, i) => {
+        cellEls.forEach((cell, i) => {
             cell.classList.toggle('selected', selectedCells.includes(i));
         });
 
@@ -60,6 +63,7 @@
             if (!selectedCells.includes(i)) remainingIndices.push(i);
         }
 
+        const total = remainingIndices.length * (remainingIndices.length - 1) / 2;
         let comboCounts = { 0: 0, 1: 0, 2: 0, 3: 0 };
 
         for (let i = 0; i < remainingIndices.length; i++) {
@@ -77,11 +81,41 @@
             }
         }
 
-        renderResults(comboCounts);
+        renderResults(comboCounts, total);
     }
 
-    function renderResults(counts) {
-        const total = 36;
+    function getAdvice(counts, total) {
+        const p2plusRaw = counts[2] + counts[3];
+        const p1plusRaw = counts[1] + p2plusRaw;
+
+        if (counts[3] > 0) {
+            const p3 = (counts[3] / total * 100).toFixed(1);
+            return {
+                cls: "perfect",
+                text: `🌟 <strong>發現 3 線雛形！</strong> 目前有 ${p3}% 的機率連成 3 線（金票）。這在數學上是非常罕見的強勢陣型，強烈建議直接開獎！`
+            };
+        }
+        if (p2plusRaw / total >= 0.2) {
+            const p2plus = (p2plusRaw / total * 100).toFixed(1);
+            return {
+                cls: "good",
+                text: `✅ <strong>陣型非常穩健：</strong> 至少 2 線的機率高達 ${p2plus}%。這已經是很優質的結果，若非執著金票，不建議再消耗點數「重新貼」。`
+            };
+        }
+        if (p1plusRaw / total >= 0.5) {
+            const p1plus = (p1plusRaw / total * 100).toFixed(1);
+            return {
+                cls: "",
+                text: `💡 <strong>低標機率尚可：</strong> 至少有 ${p1plus}% 的機會拿到 1 線。若獎勵點數剩餘不多，可以考慮收手。`
+            };
+        }
+        return {
+            cls: "bad",
+            text: `⚠️ <strong>建議「重新貼」：</strong> 目前陣型不可能達成 3 線，且連 1 線的機率都低於一半。若有點數，建議重洗位置。`
+        };
+    }
+
+    function renderResults(counts, total) {
         const p0 = (counts[0] / total * 100).toFixed(1);
         const p1 = (counts[1] / total * 100).toFixed(1);
         const p2 = (counts[2] / total * 100).toFixed(1);
@@ -93,22 +127,8 @@
         const p1plus = (p1plusRaw / total * 100).toFixed(1);
         const p2plus = (p2plusRaw / total * 100).toFixed(1);
 
-        let adv = "", cls = "";
-        if (parseFloat(p3) > 0) {
-            adv = `🌟 <strong>發現 3 線雛形！</strong> 目前有 ${p3}% 的機率連成 3 線（金票）。這在數學上是非常罕見的強勢陣型，強烈建議直接開獎！`;
-            cls = "perfect";
-        } else if (parseFloat(p2plus) >= 20) {
-            adv = `✅ <strong>陣型非常穩健：</strong> 至少 2 線的機率高達 ${p2plus}%。這已經是很優質的結果，若非執著金票，不建議再消耗點數「重新貼」。`;
-            cls = "good";
-        } else if (parseFloat(p1plus) >= 50) {
-            adv = `💡 <strong>低標機率尚可：</strong> 至少有 ${p1plus}% 的機會拿到 1 線。若獎勵點數剩餘不多，可以考慮收手。`;
-            cls = "";
-        } else {
-            adv = `⚠️ <strong>建議「重新貼」：</strong> 目前陣型不可能達成 3 線，且連 1 線的機率都低於一半。若有點數，建議重洗位置。`;
-            cls = "bad";
-        }
-
-        suggestionEl.innerHTML = `<div class="suggestion-card ${cls}">${adv}</div>`;
+        const advice = getAdvice(counts, total);
+        suggestionEl.innerHTML = `<div class="suggestion-card ${advice.cls}">${advice.text}</div>`;
 
         resultsEl.innerHTML = `
             <div class="result-section">
@@ -139,3 +159,4 @@
     }
 
     init();
+})();
