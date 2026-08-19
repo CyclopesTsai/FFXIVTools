@@ -378,3 +378,85 @@ h1 {
     opacity: 1;
     text-decoration: underline;
 }
+
+.credit-footer {
+    margin-top: 24px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    text-align: right;
+    font-size: 11px;
+}
+
+.credit-trigger {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    font-size: 11px;
+    color: #8c7a6b;
+    cursor: pointer;
+    border-bottom: 1px dotted #8c7a6b;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.credit-trigger:hover {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+}
+
+.credit-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 200;
+}
+
+.credit-modal-overlay.open {
+    display: flex;
+}
+
+.credit-modal {
+    background: var(--paper-bg);
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+        url('https://www.transparenttextures.com/patterns/parchment.png');
+    border: 1px solid #d4c4a8;
+    border-radius: 8px;
+    padding: 20px 22px;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    position: relative;
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+.credit-modal p {
+    margin: 0;
+}
+
+.credit-modal a {
+    color: var(--ink);
+}
+
+.credit-modal-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--ink);
+    opacity: 0.5;
+    font-size: 14px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 4px;
+}
+
+.credit-modal-close:hover {
+    opacity: 1;
+}

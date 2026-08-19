@@ -35,6 +35,18 @@
     <div class="score-bar" id="score-bar" style="display:none;">
         <span>剩餘翻牌次數：<span id="clicks-left">11</span></span>
     </div>
+
+    <div class="credit-footer">
+        <button type="button" class="credit-trigger" id="credit-trigger">Reference</button>
+    </div>
+</div>
+
+<div class="credit-modal-overlay" id="credit-modal-overlay">
+    <div class="credit-modal">
+        <button type="button" class="credit-modal-close" id="credit-modal-close">✕</button>
+        <p>參考自 <a href="https://github.com/hydai/ff14.tw" target="_blank" rel="noopener">GitHub @hydai/ff14.tw</a></p>
+        <p>盤面資料來源：<a href="https://www.reddit.com/r/ffxiv/comments/16wl1e7/faux_hollows_fox_location_guide_finished/" target="_blank" rel="noopener">Reddit 攻略貼文</a></p>
+    </div>
 </div>
 
 <div class="picker-overlay" id="picker-overlay">
@@ -43,5 +55,6 @@
 
 <script src="js/faux-hollows-data.js?v=1"></script>
 <script src="js/faux-hollows.js?v=4"></script>
+<script src="js/credit-modal.js"></script>
 </body>
 </html>
