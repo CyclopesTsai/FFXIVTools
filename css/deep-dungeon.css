@@ -1,0 +1,418 @@
+:root {
+    --paper-bg: #f8f1e5;
+    --paper-dark: #e6d5b8;
+    --ink: #3d2b1f;
+    --gold: #b8860b;
+    --accent: #3498db;
+    --cell-bg: #ffffff;
+    --cell-active: #5d4037;
+}
+
+body {
+    background-color: #121212;
+    background-image: radial-gradient(#2c2c2c 1px, transparent 1px);
+    background-size: 20px 20px;
+    font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    color: var(--ink);
+}
+
+.container {
+    background: var(--paper-bg);
+    background-image:
+            linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+            url('https://www.transparenttextures.com/patterns/parchment.png');
+    width: 100%;
+    max-width: 640px;
+    padding: 40px 30px;
+    border-radius: 4px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 100px rgba(184, 134, 11, 0.1);
+    border: 1px solid #d4c4a8;
+    position: relative;
+}
+
+.container::before {
+    content: "";
+    position: absolute;
+    top: 10px; left: 10px; right: 10px; bottom: 10px;
+    border: 2px solid var(--gold);
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+h1 {
+    text-align: center;
+    margin: 0;
+    font-size: 24px;
+    color: #4a3728;
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 12px;
+    color: #8c7a6b;
+    margin-top: 5px;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.back-link {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 14px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    z-index: 10;
+}
+
+.back-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* 子選單：迷宮列表卡片 */
+.dungeon-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.dungeon-card {
+    display: block;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid #d4c4a8;
+    border-radius: 8px;
+    padding: 18px 20px;
+    text-decoration: none;
+    color: var(--ink);
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.dungeon-card:hover {
+    background: rgba(255, 255, 255, 0.85);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    border-color: var(--gold);
+}
+
+.dungeon-card .name-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.dungeon-card .name-zh {
+    font-size: 19px;
+    font-weight: 700;
+    color: #4a3728;
+}
+
+.dungeon-card .floor-range {
+    font-size: 12px;
+    color: var(--gold);
+    font-weight: 600;
+}
+
+.dungeon-card .name-en {
+    font-size: 12px;
+    color: #8c7a6b;
+    margin-bottom: 8px;
+}
+
+.dungeon-card .desc {
+    font-size: 13px;
+    color: #5d4037;
+    line-height: 1.6;
+}
+
+/* 詳情頁：總覽區塊 */
+.overview-section {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    font-size: 13.5px;
+    line-height: 1.8;
+}
+
+.overview-section .floor-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+}
+
+.info-group {
+    margin-bottom: 20px;
+}
+
+.info-group h3 {
+    font-size: 14px;
+    margin: 0 0 10px;
+    color: #4a3728;
+    border-left: 4px solid var(--gold);
+    padding-left: 8px;
+}
+
+.info-item {
+    background: rgba(255,255,255,0.35);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.info-item .item-name {
+    font-weight: 700;
+    color: #5d4037;
+    margin-right: 6px;
+}
+
+/* 樓層分段 Accordion */
+.floor-sets {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.floor-set {
+    background: rgba(255,255,255,0.4);
+    border: 1px solid #dcd0bc;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.floor-set-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a3728;
+    transition: background 0.2s;
+}
+
+.floor-set-header:hover {
+    background: rgba(255,255,255,0.5);
+}
+
+.floor-set-header .range-label {
+    color: var(--ink);
+}
+
+.floor-set-header .boss-label {
+    font-size: 12px;
+    font-weight: normal;
+    color: #8c7a6b;
+}
+
+.floor-set-header .chevron {
+    transition: transform 0.2s;
+    opacity: 0.6;
+    font-size: 12px;
+}
+
+.floor-set.open .chevron {
+    transform: rotate(90deg);
+}
+
+.floor-set-body {
+    display: none;
+    padding: 0 14px 14px;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.floor-set.open .floor-set-body {
+    display: block;
+}
+
+.floor-set-body .fs-notes {
+    color: #5d4037;
+    margin-bottom: 8px;
+}
+
+.floor-set-body .mob-block {
+    background: rgba(0,0,0,0.04);
+    border-left: 3px solid #c05621;
+    border-radius: 0 4px 4px 0;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+}
+
+.floor-set-body .mob-block .block-label {
+    font-weight: 700;
+    color: #9c4221;
+    margin-bottom: 4px;
+    font-size: 12px;
+}
+
+.mob-name-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.mob-name-tag {
+    background: rgba(192, 86, 33, 0.12);
+    color: #9c4221;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11.5px;
+    font-weight: 600;
+}
+
+/* 小怪攻略：每隻小怪獨立一張卡片，分開顯示避免擠成一大段文字 */
+.mob-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.mob-entry {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    padding: 6px 8px;
+}
+
+.mob-entry-name {
+    font-weight: 700;
+    color: #9c4221;
+    font-size: 12.5px;
+    margin-bottom: 2px;
+}
+
+.mob-entry-tips {
+    color: #4a3728;
+}
+
+.floor-set-body .boss-block {
+    background: rgba(0,0,0,0.04);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+    padding: 8px 10px;
+}
+
+.floor-set-body .boss-block .block-label {
+    font-weight: 700;
+    color: #2c5282;
+    margin-bottom: 4px;
+    font-size: 12px;
+}
+
+.floor-set-body .boss-block .boss-name {
+    font-weight: 700;
+    color: #2c5282;
+    margin-bottom: 4px;
+}
+
+.floor-set-body .boss-block .boss-name .pending {
+    font-weight: normal;
+    font-style: italic;
+    color: #a0aec0;
+    font-size: 11px;
+    margin-left: 6px;
+}
+
+.credit-footer {
+    margin-top: 24px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    text-align: right;
+    font-size: 11px;
+}
+
+.credit-trigger {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    font-size: 11px;
+    color: #8c7a6b;
+    cursor: pointer;
+    border-bottom: 1px dotted #8c7a6b;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.credit-trigger:hover {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+}
+
+.credit-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 200;
+}
+
+.credit-modal-overlay.open {
+    display: flex;
+}
+
+.credit-modal {
+    background: var(--paper-bg);
+    background-image:
+            linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+            url('https://www.transparenttextures.com/patterns/parchment.png');
+    border: 1px solid #d4c4a8;
+    border-radius: 8px;
+    padding: 20px 22px;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    position: relative;
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+.credit-modal p {
+    margin: 0;
+}
+
+.credit-modal a {
+    color: var(--ink);
+}
+
+.credit-modal-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--ink);
+    opacity: 0.5;
+    font-size: 14px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 4px;
+}
+
+.credit-modal-close:hover {
+    opacity: 1;
+}

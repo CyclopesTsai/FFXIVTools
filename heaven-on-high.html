@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天之御柱 攻略 - 深層迷宮</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/deep-dungeon.css">
+    <script src="js/ga.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <a href="deep-dungeon.html" class="back-link">← 返回深層迷宮選單</a>
+    <h1 id="dungeon-title"></h1>
+    <div class="subtitle" id="dungeon-subtitle"></div>
+
+    <div class="overview-section" id="overview-section"></div>
+
+    <div class="info-group" id="unique-systems-group">
+        <h3>特殊系統</h3>
+        <div id="unique-systems-list"></div>
+    </div>
+
+    <div class="info-group" id="traps-group">
+        <h3>陷阱類型</h3>
+        <div id="traps-list"></div>
+    </div>
+
+    <div class="info-group" id="rooms-group">
+        <h3>特殊房間</h3>
+        <div id="rooms-list"></div>
+    </div>
+
+    <div class="info-group">
+        <h3>樓層分段攻略</h3>
+        <div class="floor-sets" id="floor-sets"></div>
+    </div>
+
+    <div class="credit-footer">
+        <button type="button" class="credit-trigger" id="credit-trigger">Reference</button>
+    </div>
+</div>
+
+<div class="credit-modal-overlay" id="credit-modal-overlay">
+    <div class="credit-modal">
+        <button type="button" class="credit-modal-close" id="credit-modal-close">✕</button>
+        <p>攻略資料整理參考自 <a href="https://www.ddcompendium.com/" target="_blank" rel="noopener">Deep Dungeon Compendium</a></p>
+    </div>
+</div>
+
+<script src="js/deep-dungeon-data-hoh.js?v=1"></script>
+<script src="js/deep-dungeon.js?v=1"></script>
+<script src="js/credit-modal.js"></script>
+<script>DeepDungeon.renderDetail('hoh');</script>
+</body>
+</html>

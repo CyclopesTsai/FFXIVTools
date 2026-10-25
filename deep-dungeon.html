@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深層迷宮攻略</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/deep-dungeon.css">
+    <script src="js/ga.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <a href="index.html" class="back-link">← 返回導航頁</a>
+    <h1>深層迷宮攻略</h1>
+    <div class="subtitle">Deep Dungeon Guide</div>
+
+    <div class="dungeon-list" id="dungeon-list"></div>
+</div>
+
+<script src="js/deep-dungeon-data-potd.js?v=1"></script>
+<script src="js/deep-dungeon-data-hoh.js?v=1"></script>
+<script src="js/deep-dungeon-data-eo.js?v=1"></script>
+<script src="js/deep-dungeon.js?v=1"></script>
+<script>
+    DeepDungeon.renderMenu(document.getElementById('dungeon-list'), ['potd', 'hoh', 'eo']);
+</script>
+</body>
+</html>
