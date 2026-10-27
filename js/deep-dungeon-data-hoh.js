@@ -28,7 +28,7 @@ window.DEEP_DUNGEON_DATA.hoh = {
     floorSets: [
         {
             range: '1-10',
-            bossFloor: 10,
+            bossFloor: 10, needsTranslation: true, verified: false,
             bossNameZh: null,
             bossNameEn: 'Mojabune',
             notes: '1-6層沒有銅寶箱、也沒有寶箱怪(Mimic)；多數魔陶器與魔石要到7層後才會開始出現；9層不會掉落寶箱增加、減少敵人、改變敵人三種魔陶器。',
@@ -37,7 +37,7 @@ window.DEEP_DUNGEON_DATA.hoh = {
         },
         {
             range: '11-20',
-            bossFloor: 20,
+            bossFloor: 20, needsTranslation: true, verified: false,
             bossNameZh: null,
             bossNameEn: 'Beccho',
             notes: '15層固定為「謬誤殿堂」大型開放樓層。',
@@ -46,7 +46,7 @@ window.DEEP_DUNGEON_DATA.hoh = {
         },
         {
             range: '21-30',
-            bossFloor: 30,
+            bossFloor: 30, needsTranslation: true, verified: false,
             bossNameZh: null,
             bossNameEn: 'Hiruko',
             notes: '這組樓層是玩家最常用來練等的區段；29層不會掉落寶箱增加、減少敵人、改變敵人三種魔陶器。',
@@ -55,7 +55,7 @@ window.DEEP_DUNGEON_DATA.hoh = {
         },
         {
             range: '31-40',
-            bossFloor: 40,
+            bossFloor: 40, needsTranslation: true, verified: false,
             bossNameZh: null,
             bossNameEn: 'Bhima',
             notes: null,
@@ -64,7 +64,7 @@ window.DEEP_DUNGEON_DATA.hoh = {
         },
         {
             range: '41-50',
-            bossFloor: 50,
+            bossFloor: 50, needsTranslation: true, verified: false,
             bossNameZh: null,
             bossNameEn: 'Gozu',
             notes: '本組樓層已知有牆壁陷阱，行走時務必留意。',
@@ -73,7 +73,7 @@ window.DEEP_DUNGEON_DATA.hoh = {
         },
         {
             range: '51-60',
-            bossFloor: 60,
+            bossFloor: 60, needsTranslation: true, verified: false,
             bossNameZh: null,
             bossNameEn: 'Suikazura',
             notes: '本組樓層已知有牆壁陷阱，行走時務必留意。',
@@ -82,7 +82,7 @@ window.DEEP_DUNGEON_DATA.hoh = {
         },
         {
             range: '61-70',
-            bossFloor: 70,
+            bossFloor: 70, needsTranslation: true, verified: false,
             bossNameZh: null,
             bossNameEn: 'Kenko',
             notes: null,
@@ -91,7 +91,7 @@ window.DEEP_DUNGEON_DATA.hoh = {
         },
         {
             range: '71-80',
-            bossFloor: 80,
+            bossFloor: 80, needsTranslation: true, verified: false,
             bossNameZh: null,
             bossNameEn: 'Kajigakaka',
             notes: '從這組樓層開始掉落白金寶藏袋；71-73層爆炸陷阱特別多，建議坦克使用全景類魔陶器應對。這組樓層仍可取得重生類魔陶器（機率提升，也是最後能取得的樓層）。',
@@ -100,7 +100,7 @@ window.DEEP_DUNGEON_DATA.hoh = {
         },
         {
             range: '81-90',
-            bossFloor: 90,
+            bossFloor: 90, needsTranslation: true, verified: false,
             bossNameZh: null,
             bossNameEn: 'Onra',
             notes: '記得在本組樓層一開始就使用重生類魔陶器，之後的樓層不會再掉落。87-89層爆炸陷阱多，適合坦克使用全景類魔陶器。',
@@ -109,7 +109,7 @@ window.DEEP_DUNGEON_DATA.hoh = {
         },
         {
             range: '91-100',
-            bossFloor: 100,
+            bossFloor: 100, needsTranslation: true, verified: false,
             bossNameZh: null,
             bossNameEn: null,
             notes: '97-99層怪物強度最低，99層保證會附帶3個強化效果，建議保留一個魔法效果解除類魔陶器應對。',

@@ -131,6 +131,21 @@ h1 {
     margin-bottom: 8px;
 }
 
+/* 狀態標籤：待翻譯／待驗證 */
+.status-tag {
+    display: inline-block;
+    color: #e53e3e;
+    font-size: 12px;
+    font-weight: 700;
+    margin-left: 4px;
+    padding: 0 5px;
+    border: 1px solid #e53e3e;
+    border-radius: 3px;
+    line-height: 1.6;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
 .dungeon-card .desc {
     font-size: 13px;
     color: #5d4037;
@@ -201,8 +216,10 @@ h1 {
 
 .floor-set-header {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    gap: 4px 8px;
     padding: 12px 14px;
     cursor: pointer;
     user-select: none;

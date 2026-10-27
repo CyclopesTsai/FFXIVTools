@@ -7,6 +7,11 @@ window.DeepDungeon = (function () {
         return div.innerHTML;
     }
 
+    // 狀態標籤：待翻譯(內容仍有未翻譯部分)、待驗證(樓層尚未實際體驗過)
+    function renderStatusTags(needsTranslation, needsVerification) {
+        return `${needsTranslation ? '<span class="status-tag">待翻譯</span>' : ''}${needsVerification ? '<span class="status-tag">待驗證</span>' : ''}`;
+    }
+
     // 子選單頁：列出 DEEP_DUNGEON_DATA 裡所有迷宮的卡片
     function renderMenu(containerEl, order) {
         const data = window.DEEP_DUNGEON_DATA || {};
@@ -16,10 +21,13 @@ window.DeepDungeon = (function () {
             const d = data[key];
             if (!d) return '';
             const shortDesc = (d.overview || '').slice(0, 40) + ((d.overview || '').length > 40 ? '...' : '');
+            const sets = d.floorSets || [];
+            const needsTranslation = sets.some(fs => fs.needsTranslation);
+            const needsVerification = sets.some(fs => !fs.verified);
             return `
                 <a class="dungeon-card" href="${escapeHtml(d.pageUrl)}">
                     <div class="name-row">
-                        <span class="name-zh">${escapeHtml(d.nameZh)}</span>
+                        <span class="name-zh">${escapeHtml(d.nameZh)} ${renderStatusTags(needsTranslation, needsVerification)}</span>
                         <span class="floor-range">${escapeHtml(d.floorRange)} 層</span>
                     </div>
                     <div class="name-en">${escapeHtml(d.nameEn)}</div>
@@ -93,7 +101,7 @@ window.DeepDungeon = (function () {
             return `
                 <div class="floor-set" data-index="${i}">
                     <div class="floor-set-header">
-                        <span class="range-label">${escapeHtml(fs.range)} 層</span>
+                        <span class="range-label">${escapeHtml(fs.range)} 層 ${renderStatusTags(fs.needsTranslation, !fs.verified)}</span>
                         <span class="boss-label">Boss: ${escapeHtml(fs.bossNameZh || fs.bossNameEn || '未知')}</span>
                         <span class="chevron">▶</span>
                     </div>

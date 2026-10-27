@@ -40,7 +40,7 @@ window.DEEP_DUNGEON_DATA.eo = {
     floorSets: [
         {
             range: '1-10',
-            bossFloor: 10,
+            bossFloor: 10, needsTranslation: false, verified: true,
             bossNameZh: '蜜言妖',
             bossNameEn: 'Gancanagh',
             notes: '1-6 層沒有銅箱、不會出現寶箱怪，也不會掉落分身召喚物或多種魔科學器，須到第 7 層後才會出現；第 9 層不掉落寶箱增加、減少敵人、改變敵人三種魔科學器。',
@@ -52,7 +52,7 @@ window.DEEP_DUNGEON_DATA.eo = {
         },
         {
             range: '11-20',
-            bossFloor: 20,
+            bossFloor: 20, needsTranslation: false, verified: true,
             bossNameZh: '複製系統',
             bossNameEn: 'Cloning Node',
             notes: '第 19 層不掉落寶箱增加、減少敵人、改變敵人三種魔科學器，11-13 層銅箱不掉落正統魔器碎片。',
@@ -62,7 +62,7 @@ window.DEEP_DUNGEON_DATA.eo = {
         },
         {
             range: '21-30',
-            bossFloor: 30,
+            bossFloor: 30, needsTranslation: false, verified: true,
             bossNameZh: '提亞馬特複製體',
             bossNameEn: "Tiamat's clone",
             notes: '第 29 層同樣不掉落寶箱增加、減少敵人、改變敵人三種魔科學器，21-23 層銅箱不掉落正統魔器碎片。',
@@ -77,7 +77,7 @@ window.DEEP_DUNGEON_DATA.eo = {
         },
         {
             range: '31-40',
-            bossFloor: 40,
+            bossFloor: 40, needsTranslation: false, verified: true,
             bossNameZh: '雙塔尼亞複製體',
             bossNameEn: "Twintania's clone",
             notes: '第 39 層不掉落寶箱增加、減少敵人、改變敵人三種魔科學器，31-33 層銅箱不掉落正統魔器碎片。此區段起寶箱怪等級提升為銀箱怪，獎勵也隨之提升。',
@@ -93,7 +93,7 @@ window.DEEP_DUNGEON_DATA.eo = {
         },
         {
             range: '41-50',
-            bossFloor: 50,
+            bossFloor: 50, needsTranslation: false, verified: true,
             bossNameZh: '自控化奇美拉14X',
             bossNameEn: 'Servomechanical Chimera 14X',
             notes: '第 49 層不掉落寶箱增加、減少敵人、改變敵人三種魔科學器，41-43 層銅箱不掉落正統魔器碎片。這個區段起請假設任何一招小怪技能都可能直接把人秒殺，務必謹慎應對。',
@@ -109,7 +109,7 @@ window.DEEP_DUNGEON_DATA.eo = {
         },
         {
             range: '51-60',
-            bossFloor: 60,
+            bossFloor: 60, needsTranslation: false, verified: true,
             bossNameZh: '自控化彌諾陶洛斯16',
             bossNameEn: 'Servomechanical Minotaur 16',
             notes: '此區段起寶箱怪等級再提升一階，場上怪物血量與自動攻擊傷害明顯提高，小怪普攻開始變痛，第一次挑戰建議開場就使用復生系道具。',
@@ -125,7 +125,7 @@ window.DEEP_DUNGEON_DATA.eo = {
         },
         {
             range: '61-70',
-            bossFloor: 70,
+            bossFloor: 70, needsTranslation: false, verified: false,
             bossNameZh: '永恆',
             bossNameEn: 'Aeturna',
             notes: '此區段起寶箱怪等級再提升一階，屬於中後期難度的分水嶺，正式進入迷宮深層（61 層起），之後樓層的怪物強度不會再大幅提升；第一次挑戰建議開場使用復生系道具。',
@@ -141,7 +141,7 @@ window.DEEP_DUNGEON_DATA.eo = {
         },
         {
             range: '71-80',
-            bossFloor: 80,
+            bossFloor: 80, needsTranslation: false, verified: false,
             bossNameZh: '原型卡利亞',
             bossNameEn: 'Proto-Kaliya',
             notes: '71-73 層已知會出現大量地雷陷阱，若能提前探路可以輕鬆不少，坦克或補師可善用這點爭取時間；公認是全程最危險的一個區段，特別要提防 73、76 層開始出現的強力巡邏怪，建議這段開始積極使用減速或群體控場，並預留至少 7 分鐘應付 80 層王戰。',
@@ -160,7 +160,7 @@ window.DEEP_DUNGEON_DATA.eo = {
         },
         {
             range: '81-90',
-            bossFloor: 90,
+            bossFloor: 90, needsTranslation: false, verified: false,
             bossNameZh: '管理者',
             bossNameEn: 'Administrator',
             notes: '此區段銀箱有相當高機率開出分身召喚物，但不會掉落重生類魔科學器；場地明顯變大，建議盡早探路找出口，接戰時保持中至近距離會比較容易閃避招式，第一次挑戰可考慮在此區段開場使用重生類魔科學器，並預留至少 7 分鐘應付 90 層王戰。',
@@ -176,7 +176,7 @@ window.DEEP_DUNGEON_DATA.eo = {
         },
         {
             range: '91-100',
-            bossFloor: 99,
+            bossFloor: 99, needsTranslation: false, verified: false,
             bossNameZh: '鬥神 王者之劍',
             bossNameEn: 'Excalibur',
             notes: '最終 Boss 位於第 99 層，第 100 層只是一段約 1 分鐘的衝刺跑圖，記得預留足夠時間並一開始就衝刺。此區段銀箱同樣有高機率開出分身召喚物，但不會掉落重生類魔科學器；怪物房出現機率明顯變高，建議預留至少 10 分鐘應付 99 層王戰與 100 層長跑。',
