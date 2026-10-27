@@ -7,6 +7,11 @@ window.DeepDungeon = (function () {
         return div.innerHTML;
     }
 
+    // 攻略文字常常需要分段顯示：資料裡用 \n 換行，這裡轉成 <br>（先跳脫 HTML 再處理，避免被當成標籤）
+    function escapeHtmlMultiline(str) {
+        return escapeHtml(str).replace(/\n/g, '<br>');
+    }
+
     // 狀態標籤：待翻譯(內容仍有未翻譯部分)、待驗證(樓層尚未實際體驗過)
     function renderStatusTags(needsTranslation, needsVerification) {
         return `${needsTranslation ? '<span class="status-tag">待翻譯</span>' : ''}${needsVerification ? '<span class="status-tag">待驗證</span>' : ''}`;
@@ -38,6 +43,7 @@ window.DeepDungeon = (function () {
     }
 
     // 詳情頁：陷阱類型 / 特殊房間 / 特殊系統 等條列區塊
+    // 若項目有 subItems（如魔科學器底下的緩速／大漩渦／恐慌裝甲化），會再各自獨立顯示
     function renderInfoItems(containerEl, items) {
         const group = containerEl.closest('.info-group');
         if (!items || items.length === 0) {
@@ -45,7 +51,15 @@ window.DeepDungeon = (function () {
             return;
         }
         containerEl.innerHTML = items.map(item => `
-            <div class="info-item"><span class="item-name">${escapeHtml(item.name)}</span>${escapeHtml(item.desc)}</div>
+            <div class="info-item">
+                <span class="item-name">${escapeHtml(item.name)}</span>${escapeHtml(item.desc)}
+                ${item.subItems && item.subItems.length ? `
+                <div class="info-sub-items">
+                    ${item.subItems.map(sub => `
+                        <div class="info-sub-item"><span class="item-name">${escapeHtml(sub.name)}</span>${escapeHtml(sub.desc)}</div>
+                    `).join('')}
+                </div>` : ''}
+            </div>
         `).join('');
     }
 
@@ -71,7 +85,7 @@ window.DeepDungeon = (function () {
                         ${mobNames.map(m => `
                             <div class="mob-entry">
                                 <div class="mob-entry-name">${formatCreatureName(m.nameZh, m.nameEn)}</div>
-                                <div class="mob-entry-tips">${escapeHtml(m.tips || '尚無攻略資料')}</div>
+                                <div class="mob-entry-tips">${escapeHtmlMultiline(m.tips || '尚無攻略資料')}</div>
                             </div>
                         `).join('')}
                     </div>
@@ -87,7 +101,7 @@ window.DeepDungeon = (function () {
                     <div class="mob-name-tags">
                         ${mobNames.map(m => `<span class="mob-name-tag">${formatCreatureName(m.nameZh, m.nameEn)}</span>`).join('')}
                     </div>` : ''}
-                    <div>${escapeHtml(fs.mobTips)}</div>
+                    <div>${escapeHtmlMultiline(fs.mobTips)}</div>
                 </div>
             `;
         }
@@ -106,12 +120,12 @@ window.DeepDungeon = (function () {
                         <span class="chevron">▶</span>
                     </div>
                     <div class="floor-set-body">
-                        ${fs.notes ? `<div class="fs-notes">${escapeHtml(fs.notes)}</div>` : ''}
+                        ${fs.notes ? `<div class="fs-notes">${escapeHtmlMultiline(fs.notes)}</div>` : ''}
                         ${renderMobBlock(fs)}
                         <div class="boss-block">
                             <div class="block-label">Boss 攻略</div>
                             <div class="boss-name">${formatCreatureName(fs.bossNameZh, fs.bossNameEn)}</div>
-                            <div>${escapeHtml(fs.bossTips || '尚無攻略資料')}</div>
+                            <div>${escapeHtmlMultiline(fs.bossTips || '尚無攻略資料')}</div>
                         </div>
                     </div>
                 </div>

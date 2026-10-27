@@ -200,6 +200,27 @@ h1 {
     margin-right: 6px;
 }
 
+/* info-item 底下的子項目（如魔科學器的緩速／大漩渦／恐慌裝甲化），各自獨立一塊 */
+.info-sub-items {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.info-sub-item {
+    background: rgba(0,0,0,0.04);
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 12.5px;
+}
+
+.info-sub-item .item-name {
+    font-weight: 700;
+    color: #5d4037;
+    margin-right: 6px;
+}
+
 /* 樓層分段 Accordion */
 .floor-sets {
     display: flex;
