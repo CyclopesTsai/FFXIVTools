@@ -135,7 +135,7 @@ window.DEEP_DUNGEON_DATA.eo = {
         },
         {
             range: '61-70',
-            bossFloor: 70, needsTranslation: false, verified: false,
+            bossFloor: 70, needsTranslation: false, verified: true,
             bossNameZh: '永恆',
             bossNameEn: 'Aeturna',
             notes: '此區段起寶箱怪等級再提升一階，屬於中後期難度的分水嶺，正式進入迷宮深層（61 層起），之後樓層的怪物強度不會再大幅提升；第一次挑戰建議開場使用復生系道具。',
