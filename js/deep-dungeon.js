@@ -17,9 +17,10 @@ window.DeepDungeon = (function () {
         return `${needsTranslation ? '<span class="status-tag">待翻譯</span>' : ''}${needsVerification ? '<span class="status-tag">待驗證</span>' : ''}`;
     }
 
-    // 子選單頁：列出 DEEP_DUNGEON_DATA 裡所有迷宮的卡片
+    // 子選單頁：列出所有迷宮的卡片
+    // 優先使用輕量的 DEEP_DUNGEON_META（只含選單需要的欄位），沒有才回退用完整的 DEEP_DUNGEON_DATA
     function renderMenu(containerEl, order) {
-        const data = window.DEEP_DUNGEON_DATA || {};
+        const data = window.DEEP_DUNGEON_META || window.DEEP_DUNGEON_DATA || {};
         const keys = order || Object.keys(data);
 
         containerEl.innerHTML = keys.map(key => {
@@ -27,8 +28,8 @@ window.DeepDungeon = (function () {
             if (!d) return '';
             const shortDesc = (d.overview || '').slice(0, 40) + ((d.overview || '').length > 40 ? '...' : '');
             const sets = d.floorSets || [];
-            const needsTranslation = sets.some(fs => fs.needsTranslation);
-            const needsVerification = sets.some(fs => !fs.verified);
+            const needsTranslation = d.needsTranslation !== undefined ? d.needsTranslation : sets.some(fs => fs.needsTranslation);
+            const needsVerification = d.needsVerification !== undefined ? d.needsVerification : sets.some(fs => !fs.verified);
             return `
                 <a class="dungeon-card" href="${escapeHtml(d.pageUrl)}">
                     <div class="name-row">
