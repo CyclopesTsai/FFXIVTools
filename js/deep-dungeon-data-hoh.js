@@ -32,7 +32,22 @@ window.DEEP_DUNGEON_DATA.hoh = {
             bossNameZh: null,
             bossNameEn: 'Mojabune',
             notes: '1-6層沒有銅寶箱、也沒有寶箱怪(Mimic)；多數魔陶器與魔石要到7層後才會開始出現；9層不會掉落寶箱增加、減少敵人、改變敵人三種魔陶器。',
-            mobTips: '小怪方面要特別留意 Shark(鯊魚)與 Amikiri 的攻擊，命中後可能直接造成即死級的「斬首」效果，遭遇時務必提高警覺、盡量閃避。',
+            mobNames: [
+                { nameEn: 'Naked Yumemi (Slug)', nameZh: '天之無殼觀夢螺' },
+                { nameEn: 'Mutsu (Small Orobon)', nameZh: '天之鯥鮟鱇' },
+                { nameEn: 'Shark', nameZh: '天之飛鯊' },
+                { nameEn: 'Bombfish', nameZh: '天之刺球爆彈怪' },
+                { nameEn: 'Onryo', nameZh: '天之怨靈' },
+                { nameEn: 'Coralshell (Crab)', nameZh: '天之珊瑚殼' },
+                { nameEn: 'Amikiri', nameZh: '天之切網蝦蛄' },
+                { nameEn: 'Gyuki (Walrus)', nameZh: '天之牛鬼' },
+                { nameEn: 'Uwabami (Cobra)', nameZh: '天之蟒蛇' },
+                { nameEn: 'Kraken', nameZh: '天之蛸入道' },
+                { nameEn: 'Yumemi (Snail)', nameZh: '天之觀夢螺' },
+                { nameEn: 'Ango (Orobon)', nameZh: '天之安居鮟鱇' },
+                { nameEn: 'Matamata', nameZh: '天之瑪塔蛇頸龜' }
+            ],
+            mobTips: '小怪方面要特別留意天之飛鯊（Shark）與天之切網蝦蛄（Amikiri）的攻擊，命中後可能直接造成即死級的「斬首」效果，遭遇時務必提高警覺、盡量閃避。',
             bossTips: '戰鬥循環固定為：震盪波圓形AoE → 從房間中央發動擊退(無法用擊退免疫抵抗) → 半場扇形AoE並疊加「受到傷害提升」(最高16層、每層40%)。建議站位時預留被擊退的空間，並留意減益不要疊加過高。'
         },
         {
@@ -41,7 +56,22 @@ window.DEEP_DUNGEON_DATA.hoh = {
             bossNameZh: null,
             bossNameEn: 'Beccho',
             notes: '15層固定為「謬誤殿堂」大型開放樓層。',
-            mobTips: '留意「Hands」(手型小怪)的狂暴機制，若拖太久交戰可能會爆發大量傷害，建議盡快解決、避免戰鬥時間過長。',
+            mobNames: [
+                { nameEn: 'Korpokkur', nameZh: '天之葉小妖' },
+                { nameEn: 'Shizuku (Sprite)', nameZh: '天之滴' },
+                { nameEn: 'Namazu', nameZh: '天之鯰魚精' },
+                { nameEn: 'Shiomushi (Coblyn)', nameZh: '天之鹽蟲' },
+                { nameEn: 'Hakagiri (Sea Serpent)', nameZh: '天之一日海蛇' },
+                { nameEn: 'Hand', nameZh: '天之右手' },
+                { nameEn: 'Unkiu (Crab)', nameZh: '天之甲鱟' },
+                { nameEn: 'Apa', nameZh: '天之阿帕斯' },
+                { nameEn: 'Otokage (Eft)', nameZh: '天之巨蜥' },
+                { nameEn: 'Tatsunoko (Seahorse)', nameZh: '天之龍之子' },
+                { nameEn: 'Amagoi (Tortoise)', nameZh: '天之祈雨龜' },
+                { nameEn: 'Aomino (Manta Ray)', nameZh: '天之鹽藍燕' },
+                { nameEn: 'Shioname (Phoebad)', nameZh: '天之鹽嘗' }
+            ],
+            mobTips: '留意天之右手（Hand）的狂暴機制，若拖太久交戰可能會爆發大量傷害，建議盡快解決、避免戰鬥時間過長。',
             bossTips: '主要技能為大範圍扇形混亂攻擊，以及360度凝視混亂(需背對Boss閃避)，混亂發動後場邊會出現蝴蝶分身並同時爆炸造成麻痺。整體策略是盡量站在場地中央，讓所有技能範圍都比較容易判斷與閃避。'
         },
         {
@@ -50,6 +80,21 @@ window.DEEP_DUNGEON_DATA.hoh = {
             bossNameZh: null,
             bossNameEn: 'Hiruko',
             notes: '這組樓層是玩家最常用來練等的區段；29層不會掉落寶箱增加、減少敵人、改變敵人三種魔陶器。',
+            mobNames: [
+                { nameEn: 'Onibi (Flame)', nameZh: '天之鬼火' },
+                { nameEn: 'Halgai', nameZh: '天之刺草球' },
+                { nameEn: 'Katasharin (Wheel)', nameZh: '天之片輪車' },
+                { nameEn: 'Dhruva', nameZh: '天之陀魯婆' },
+                { nameEn: 'Sai Taisui', nameZh: '天之賽太歲' },
+                { nameEn: 'Menreiki (Persona)', nameZh: '天之面靈氣' },
+                { nameEn: 'Hatamoto (Samurai)', nameZh: '天之旗本' },
+                { nameEn: 'Tenaga', nameZh: '天之長手精' },
+                { nameEn: 'Keukegen', nameZh: '天之毛羽毛現' },
+                { nameEn: 'Wanyudo (Wheel)', nameZh: '天之輪入道' },
+                { nameEn: 'Yuki (Specter)', nameZh: '天之幽鬼' },
+                { nameEn: 'Koja', nameZh: '天之高加顱' },
+                { nameEn: 'Tengu', nameZh: '天之鴉天狗' }
+            ],
             mobTips: null,
             bossTips: '開場先是直線閃電AoE，接著召喚雷雲並以Shiko技能震飛玩家(與標記保持距離可大幅降低傷害)；要躲進雷雲下方破壞雷雲形成安全區，等其他雷雲爆炸完才能離開。後續循環會加入覆蓋半場的大範圍AoE，同樣要等雷雲結束才能走位閃避。'
         },
@@ -59,7 +104,22 @@ window.DEEP_DUNGEON_DATA.hoh = {
             bossNameZh: null,
             bossNameEn: 'Bhima',
             notes: null,
-            mobTips: '留意 Harakiri 與 Onmitsu 怪物的狂暴機制，避免戰鬥拖太久；本區有兩隻同名的 Onmitsu(忍者)，一隻是巡邏怪、一隻不是，交戰前需注意辨別，以免誤判遭遇時機。',
+            mobNames: [
+                { nameEn: 'Gedan (Wolf)', nameZh: '天之獦狚' },
+                { nameEn: 'Hornbill (Bird)', nameZh: '天之紅角犀鳥' },
+                { nameEn: 'Onmitsu (Ninja)', nameZh: '天之隱密' },
+                { nameEn: 'Hanya', nameZh: '天之般若' },
+                { nameEn: 'Harakiri', nameZh: '天之切腹般若' },
+                { nameEn: 'Vanara', nameZh: '天之婆那羅' },
+                { nameEn: 'Onmitsu (Ninja)', nameZh: '天之隱密' },
+                { nameEn: 'Moko (Tiger)', nameZh: '天之猛虎' },
+                { nameEn: 'Mokin (Vulture)', nameZh: '天之猛禽' },
+                { nameEn: 'Dogu', nameZh: '天之土偶' },
+                { nameEn: 'Kiyofusa', nameZh: '天之清房' },
+                { nameEn: 'Ashigaru', nameZh: '天之足輕' },
+                { nameEn: 'Shishi (Lion)', nameZh: '天之獅子' }
+            ],
+            mobTips: '留意天之切腹般若（Harakiri）與天之隱密（Onmitsu）的狂暴機制，避免戰鬥拖太久；本區有兩隻同名的天之隱密（忍者），一隻是巡邏怪、一隻不是，交戰前需注意辨別，以免誤判遭遇時機。',
             bossTips: 'Boss交替使用直線/圓形風屬性AoE並附加風傷持續傷害，每隔一段時間會在場地兩側(東西或南北)召喚旋風分身，接著發動全場擊退AoE(擊退可被完全格擋的護盾抵銷)，旋風會在擊退後立刻爆炸，務必避開被擊退後會落地的位置。'
         },
         {
@@ -68,7 +128,22 @@ window.DEEP_DUNGEON_DATA.hoh = {
             bossNameZh: null,
             bossNameEn: 'Gozu',
             notes: '本組樓層已知有牆壁陷阱，行走時務必留意。',
-            mobTips: '留意 Sekiban 與 Mizumimizu 怪物的狂暴機制，拖久了容易累積大量傷害。本區有多組外觀不同、但同名的怪物，例如兩種 Sekizo 石像(一隻是巡邏怪)、兩種 Iseki 魔像(顏色不同)，以及兩種 Saikoro(需看施放的是風系還是風暴系技能來分辨)，交戰前最好先確認對象，避免誤判。',
+            mobNames: [
+                { nameEn: 'Ganseki (Sprite)', nameZh: '天之岩石' },
+                { nameEn: 'Saikoro (Urolith)', nameZh: '天之骰子' },
+                { nameEn: 'Kuro-usagi (Spriggolem)', nameZh: '天之黑兔' },
+                { nameEn: 'Dhara', nameZh: '天之陀羅' },
+                { nameEn: 'Sekizo (Golem)', nameZh: '天之石像' },
+                { nameEn: 'Sekizo (Golem)', nameZh: '天之石像' },
+                { nameEn: 'Saikoro (Urolith)', nameZh: '天之骰子' },
+                { nameEn: 'Sekiban', nameZh: '天之石板' },
+                { nameEn: 'Iseki (Marolith)', nameZh: '天之異石' },
+                { nameEn: 'Aka-ishi (Effigy)', nameZh: '天之赤岩' },
+                { nameEn: 'Mizumimizu (Worm)', nameZh: '天之仙女蟲' },
+                { nameEn: 'Iseki (Marolith)', nameZh: '天之異石' },
+                { nameEn: 'Monoiwa (Phoebad)', nameZh: '天之物岩' }
+            ],
+            mobTips: '留意天之石板（Sekiban）與天之仙女蟲（Mizumimizu）的狂暴機制，拖久了容易累積大量傷害。本區有多組外觀不同、但同名的怪物，例如兩種天之石像（Sekizo，一隻是巡邏怪）、兩種天之異石（Iseki，顏色不同），以及兩種天之骰子（Saikoro，需看施放的是龍卷還是疾風技能來分辨），交戰前最好先確認對象，避免誤判。',
             bossTips: 'Boss交替使用利爪與怨言的扇形/直線AoE並疊加受到傷害提升，接著使用360度凝視混亂(需背對閃避)。混亂後會召喚持續釋放AoE的球體並壓縮安全範圍，同時Boss會蓄力發動大範圍震盪攻擊(越靠近標記傷害越高)，應盡量遠離Boss與球體，等下一輪利爪技能出現後球體才會消失。'
         },
         {
@@ -77,7 +152,22 @@ window.DEEP_DUNGEON_DATA.hoh = {
             bossNameZh: null,
             bossNameEn: 'Suikazura',
             notes: '本組樓層已知有牆壁陷阱，行走時務必留意。',
-            mobTips: '留意 Kongorei(砲台型)與 Tesso(手型)怪物的狂暴機制、Naga 的怒嚎技能(Baleful Roar)，以及 Rachimonai 即使脫離戰鬥仍會持續發動的範圍技，稍不留神容易被波及。',
+            mobNames: [
+                { nameEn: 'Kamakiri (Mantis)', nameZh: '天之螳螂' },
+                { nameEn: 'Kamanari', nameZh: '天之鳴釜' },
+                { nameEn: 'Naga (Ahriman)', nameZh: '天之那迦' },
+                { nameEn: 'Tokagekiba (Centaur)', nameZh: '天之牙蜥' },
+                { nameEn: 'Kongorei (Turret)', nameZh: '天之金剛鈴' },
+                { nameEn: 'Maruishi (Node)', nameZh: '天之圓石' },
+                { nameEn: 'Tetsu-Kyojin (Dullahan)', nameZh: '天之鐵巨人' },
+                { nameEn: 'Tesso (Hand)', nameZh: '天之鐵爪' },
+                { nameEn: 'Karakuri (Onmitsu)', nameZh: '天之機關人' },
+                { nameEn: 'Dokyu (Dreadnaught)', nameZh: '天之無畏' },
+                { nameEn: 'Shabti', nameZh: '天之沙布提' },
+                { nameEn: 'Gowan', nameZh: '天之鐵臂' },
+                { nameEn: 'Rachimonai', nameZh: '天之無釐頭' }
+            ],
+            mobTips: '留意天之金剛鈴（Kongorei，砲台型）與天之鐵爪（Tesso，手型）的狂暴機制、天之那迦（Naga）的怒嚎技能，以及天之無釐頭（Rachimonai）即使脫離戰鬥仍會持續發動的範圍技，稍不留神容易被波及。',
             bossTips: '戰鬥中會不斷召喚「受詛咒的手杖」分身，分批輪流施放甜甜圈狀AoE與直線AoE，場地中心通常是安全區；後期會同時出現8支手杖一起發動技能，建議把直線AoE引導到靠牆位置閃避。整場機制偏向密集讀技能、持續走位，沒有特別固定的安全站位。'
         },
         {
@@ -86,7 +176,22 @@ window.DEEP_DUNGEON_DATA.hoh = {
             bossNameZh: null,
             bossNameEn: 'Kenko',
             notes: null,
-            mobTips: '從這組樓層開始，金寶箱裡的寶箱怪(Mimic)無法被眩暈，開箱前請先做好戰鬥準備；Onryo是觸碰式仇恨(非視覺)，很難靠視線提前迴避，常常難以避開，需特別小心。',
+            mobNames: [
+                { nameEn: 'Mannenso', nameZh: '天之萬年草' },
+                { nameEn: 'Wakakusa (Seedling)', nameZh: '天之嫩草' },
+                { nameEn: 'Jubokko (Biloko)', nameZh: '天之樹木子' },
+                { nameEn: 'Onryo', nameZh: '天之怨靈' },
+                { nameEn: 'Iwamushi (Coblyn)', nameZh: '天之岩蟲' },
+                { nameEn: 'Jellyfish', nameZh: '天之海濱水母' },
+                { nameEn: 'Morbol', nameZh: '天之魔界花' },
+                { nameEn: 'Doguzeri (Flytrap)', nameZh: '天之毒芹' },
+                { nameEn: 'Kosodegai (Uragnite)', nameZh: '天之小袖貝' },
+                { nameEn: 'Chizakura (Leshy)', nameZh: '天之血櫻' },
+                { nameEn: 'Hashiri-dokoro (Henbane)', nameZh: '天之東莨菪' },
+                { nameEn: 'Shitaibana', nameZh: '天之屍生花' },
+                { nameEn: 'Penghou (Ochu)', nameZh: '天之彭侯' }
+            ],
+            mobTips: '從這組樓層開始，金寶箱裡的寶箱怪（Mimic）無法被眩暈，開箱前請先做好戰鬥準備；天之怨靈（Onryo）是觸碰式仇恨（非視覺），很難靠視線提前迴避，常常難以避開，需特別小心。',
             bossTips: '場上會出現會疊加「降低25%輸出、提升400%受到傷害」減益的水坑。流程大致為：全場AoE發動時要站在水坑外；Boss對某玩家使用衝撞暈眩技能時，該玩家要站進水坑內；緊接著的即死技能「吞噬」也要留在水坑內才能免疫（水坑減益會讓這個即死技能必定失手）；下一次全場AoE前要離開水坑。簡言之：全場AoE站外面，衝撞到即死技能這段時間站裡面，結束後再回到外面。'
         },
         {
@@ -95,7 +200,22 @@ window.DEEP_DUNGEON_DATA.hoh = {
             bossNameZh: null,
             bossNameEn: 'Kajigakaka',
             notes: '從這組樓層開始掉落白金寶藏袋；71-73層爆炸陷阱特別多，建議坦克使用全景類魔陶器應對。這組樓層仍可取得重生類魔陶器（機率提升，也是最後能取得的樓層）。',
-            mobTips: '留意幽靈(Wraith)與 Elbst 類怪物在脫離戰鬥後仍會發動的範圍技，稍不留神可能直接被秒殺；Mammoth類怪物在隱形狀態下移動時也容易造成意外，需隨時保持警覺。',
+            mobNames: [
+                { nameEn: 'Shikubi (Bomb)', nameZh: '天之四九火' },
+                { nameEn: 'Ichijama (Wraith)', nameZh: '天之生邪魔' },
+                { nameEn: 'Hyoga (Tiger)', nameZh: '天之冰牙' },
+                { nameEn: 'Noyagi (Deer)', nameZh: '天之野山羊' },
+                { nameEn: 'Okami (Wolf)', nameZh: '天之狼' },
+                { nameEn: 'Yuki-Tokage (Elbst)', nameZh: '天之雪蜥' },
+                { nameEn: 'Hyozan (Ice Golem)', nameZh: '天之冰山' },
+                { nameEn: 'Mammoth', nameZh: '天之長毛象' },
+                { nameEn: 'Tofu (Pudding)', nameZh: '天之豆腐' },
+                { nameEn: 'Jujishi (Griffin)', nameZh: '天之獅鷲' },
+                { nameEn: 'Shiro-Jishi (Lion)', nameZh: '天之白獅' },
+                { nameEn: 'Yak (Buffalo)', nameZh: '天之牦牛' },
+                { nameEn: 'Yuki-Otoko (Yeti)', nameZh: '天之雪人' }
+            ],
+            mobTips: '留意天之生邪魔（Wraith）與天之雪蜥（Elbst）在脫離戰鬥後仍會發動的範圍技，稍不留神可能直接被秒殺；天之長毛象（Mammoth）在隱形狀態下移動時也容易造成意外，需隨時保持警覺。',
             bossTips: 'Boss先用扇形嚎叫附加凍傷持續傷害，接著使用瞬間位移技能，若目標仍處於凍傷狀態會被直接即死，需留意凍傷是否已消退。戰鬥中會在場地邊緣召出冰塊，冰塊若被直線AoE或其他爆炸波及會連鎖爆炸，需留意站位避免被牽連在內。'
         },
         {
@@ -104,8 +224,23 @@ window.DEEP_DUNGEON_DATA.hoh = {
             bossNameZh: null,
             bossNameEn: 'Onra',
             notes: '記得在本組樓層一開始就使用重生類魔陶器，之後的樓層不會再掉落。87-89層爆炸陷阱多，適合坦克使用全景類魔陶器。',
-            mobTips: '84-86層的 Shinzei 巡邏怪特別棘手，建議能避則避，可用減少敵人、改變敵人、石化類魔陶器或魔石閃過。',
-            bossTips: '戰鬥分為兩階段：血量85%前循環固定的三個大招(扇形直線AoE、近身擊退AoE、寬幅直線AoE)；85%後加入比例傷害的全場AoE，並會在某位玩家身上標記延遲觸發的流星AoE，同時場上黑球會持續對周遭造成重擊與擊退。近戰要維持輸出需配合Boss的走位與轉向時機，機制較複雜，建議先熟悉走位教學圖再挑戰。'
+            mobNames: [
+                { nameEn: 'Garula (Buffalo)', nameZh: '天之加魯拉' },
+                { nameEn: 'Rowan (Gorilla)', nameZh: '天之老猿' },
+                { nameEn: 'Mukai-inu (Chimera)', nameZh: '天之送狼' },
+                { nameEn: 'Ryukotsu (Elephant)', nameZh: '天之象魔' },
+                { nameEn: 'Gozu', nameZh: '天之牛頭' },
+                { nameEn: 'Matanga', nameZh: '天之龍骨' },
+                { nameEn: 'Shinzei (Suud)', nameZh: '天之真濟' },
+                { nameEn: 'Ryujin', nameZh: '天之龍人' },
+                { nameEn: 'Hitotsume (Cyclops)', nameZh: '天之獨眼' },
+                { nameEn: 'Araragi (Goobbue)', nameZh: '天之紫衫' },
+                { nameEn: 'Enko', nameZh: '天之猿猴' },
+                { nameEn: 'Koki', nameZh: '天之鋼鬼' },
+                { nameEn: 'Rakshasa (Manticore)', nameZh: '天之羅剎' }
+            ],
+            mobTips: '84-86層的天之真濟（Shinzei）巡邏怪特別棘手，建議能避則避，可用減少敵人、改變敵人、石化類魔陶器或魔石閃過。',
+            bossTips: '戰鬥分為兩階段：血量85%前循環固定的三個大招（大範圍圓形AoE、近身擊退AoE、寬幅直線AoE）；85%後加入比例傷害的全場AoE，並會在某位玩家身上標記延遲觸發的流星AoE，同時場上黑球會持續對周遭造成重擊與擊退。近戰要維持輸出需配合Boss的走位與轉向時機，機制較複雜，建議先熟悉走位教學圖再挑戰。'
         },
         {
             range: '91-100',
@@ -113,7 +248,23 @@ window.DEEP_DUNGEON_DATA.hoh = {
             bossNameZh: null,
             bossNameEn: null,
             notes: '97-99層怪物強度最低，99層保證會附帶3個強化效果，建議保留一個魔法效果解除類魔陶器應對。',
-            mobTips: '91-93層若單人練習，建議挑白魔道士型怪物下手：只要靠視線躲開其石化咒語(Stone)就完全不會受傷，可以先在11層以上的小妖精身上練習抓視線時機；盡量避免招惹戰士(WAR)型怪物。94-96層是本組最難應付的區段，建議保留減少敵人、改變敵人、石化類魔陶器或魔石給這幾層。',
+            mobNames: [
+                { nameEn: 'Gozu (Minotaur)', nameZh: '天之牛頭' },
+                { nameEn: 'Nuppeppo (WAR)', nameZh: '天之肉人（戰）' },
+                { nameEn: 'Nuppeppo (WHM)', nameZh: '天之肉人（白）' },
+                { nameEn: 'Nuppeppo (MNK)', nameZh: '天之肉人（僧）' },
+                { nameEn: 'Mifune', nameZh: '天之三船' },
+                { nameEn: 'Jaki (Demon)', nameZh: '天之邪鬼' },
+                { nameEn: 'Kubinashi (Dullahan)', nameZh: '天之無頭鬼' },
+                { nameEn: 'Jinba (Centaur)', nameZh: '天之人馬' },
+                { nameEn: 'Kyozo (Mirror Knight)', nameZh: '天之鏡像' },
+                { nameEn: 'Kuro-kishi (Bloodguard)', nameZh: '天之黑騎士' },
+                { nameEn: 'Tenma (Pegasus)', nameZh: '天之馬' },
+                { nameEn: 'Zenki (Arch Demon)', nameZh: '天之前鬼' },
+                { nameEn: 'Shabti', nameZh: '天之沙布提' },
+                { nameEn: 'Dodo', nameZh: '天之渡渡鳥' }
+            ],
+            mobTips: '91-93層若單人練習，建議挑天之肉人（白，白魔法師型）下手：只要靠視線躲開其石化咒語（飛石）就完全不會受傷，可以先在11層以上的小妖精身上練習抓視線時機；盡量避免招惹天之肉人（戰，戰士型）。94-96層是本組最難應付的區段，建議保留減少敵人、改變敵人、石化類魔陶器或魔石給這幾層。',
             bossTips: '第100層沒有Boss戰，只需跑到樓層最深處觸碰「天靈神座」即可完成攻略，不使用疾走技能大約15秒可以跑到終點。單人完成挑戰可取得稱號，若想在神座內截圖留念，可用指令 /title set "Lone Hero" 設定稱號。'
         }
     ],
