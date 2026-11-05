@@ -345,6 +345,29 @@ h1 {
     color: #4a3728;
 }
 
+/* 怪物/Boss 圖片縮圖列 */
+.creature-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 4px 0 6px;
+}
+
+.creature-images img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #d4c4a8;
+    display: block;
+    transition: transform 0.15s;
+}
+
+.creature-images img:hover {
+    transform: scale(1.08);
+    border-color: var(--gold);
+}
+
 .floor-set-body .boss-block {
     background: rgba(0,0,0,0.04);
     border-left: 3px solid var(--accent);

@@ -1,6 +1,8 @@
 // 天之御柱 攻略資料
 // 內容整理自 https://www.ddcompendium.com/ 的樓層機制資料，以繁體中文重新改寫說明文字。
 // 怪物/Boss 專有名稱暫以英文保留，待後續補上正式繁中譯名（bossNameZh）。
+// 圖片（選填）：mobNames 項目與 floorSets 可各自加上 images / bossImages 陣列（一張或多張路徑），
+// 圖檔放在 img/deep-dungeon/hoh/ 底下，例如 images: ['img/deep-dungeon/hoh/example.jpg']。
 window.DEEP_DUNGEON_DATA = window.DEEP_DUNGEON_DATA || {};
 window.DEEP_DUNGEON_DATA.hoh = {
     key: 'hoh',

@@ -1,6 +1,8 @@
 // 死者宮殿 攻略資料
 // 內容整理自 https://www.ddcompendium.com/ 的樓層機制資料，以繁體中文重新改寫說明文字。
 // 怪物/Boss 專有名稱暫以英文保留，待後續補上正式繁中譯名（bossNameZh）。
+// 圖片（選填）：mobNames 項目與 floorSets 可各自加上 images / bossImages 陣列（一張或多張路徑），
+// 圖檔放在 img/deep-dungeon/potd/ 底下，例如 images: ['img/deep-dungeon/potd/example.jpg']。
 window.DEEP_DUNGEON_DATA = window.DEEP_DUNGEON_DATA || {};
 window.DEEP_DUNGEON_DATA.potd = {
     key: 'potd',
@@ -29,77 +31,7 @@ window.DEEP_DUNGEON_DATA.potd = {
         { name: '寶箱分級', desc: '銅寶箱開出藥水與可兌換道具的碎片；銀寶箱有機率強化聚魔裝備，也有機率直接爆炸、對周遭所有人造成當前 HP 70% 的傷害；金寶箱開出魔陶器，越深的樓層金寶箱偽裝成寶箱怪的機率也越高。' }
     ],
     floorSets: [
-        { range: '1-10', bossFloor: 10, needsTranslation: true, verified: false, bossNameZh: '地宮死亡凝視', bossNameEn: 'Palace Deathgaze', notes: '怪物與陷阱都還算簡單，東南角的環形房間有已知壁陷阱，雙方 HP 都偏低，主要用來熟悉基本操作。', mobNames: [
-            { nameEn: 'Palace Sprite', nameZh: '地宮元精' },
-            { nameEn: 'Palace Deathmouse', nameZh: '地宮死亡鼠' },
-            { nameEn: 'Palace Ziz', nameZh: '地宮席茲' },
-            { nameEn: 'Palace Antelope', nameZh: '地宮羚羊' },
-            { nameEn: 'Palace Bat', nameZh: '地宮蝙蝠' },
-            { nameEn: 'Lost Goblin', nameZh: '迷路的哥布林' },
-            { nameEn: 'Palace Coblyn', nameZh: '地宮礦爬蟲' },
-            { nameEn: 'Palace Hippocerf', nameZh: '地宮駿雕' },
-            { nameEn: 'Palace Beetle', nameZh: '地宮甲蟲' },
-            { nameEn: 'Palace Dung Beetle', nameZh: '地宮糞甲蟲' },
-            { nameEn: 'Palace Hornet', nameZh: '地宮黃蜂' },
-            { nameEn: 'Palace Yarzon', nameZh: '地宮盲頭蟹' }
-        ], mobTips: '小心黃蜂瀕死時發動的「終極針」，這招固定造成自身最大 HP 70% 的傷害並伴隨自爆，建議提早擊殺或盡快遠離，避免被波及。', bossTips: '固定技能循環：瞬發近戰、扇形 AoE、定點 AoE（附加緩速）、隨機單體 AoE，最後以全體風傷 AoE 收尾。機制單純，依序閃避扇形與定點 AoE即可。' },
-        { range: '11-20', bossFloor: 20, needsTranslation: true, verified: false, bossNameZh: '大戟花', bossNameEn: 'Spurge', notes: '大量壁陷阱集中在環形與死路型房間。', mobNames: [
-            { nameEn: 'Palace Pudding', nameZh: '地宮軟糊怪' },
-            { nameEn: 'Living Whelk', nameZh: '活螺水蛭' },
-            { nameEn: 'Palace Uragnite', nameZh: '地宮烏菊石' },
-            { nameEn: 'Palace Toad', nameZh: '地宮蟾蜍' },
-            { nameEn: 'Palace Slime', nameZh: '地宮黏液怪' },
-            { nameEn: 'Palace Cobra', nameZh: '地宮眼鏡蛇' },
-            { nameEn: 'Palace Nanka', nameZh: '地宮南加' },
-            { nameEn: 'Palace Ninki Nanka', nameZh: '地宮寧基南加' },
-            { nameEn: 'Palace Biloko', nameZh: '地宮比洛克' },
-            { nameEn: 'Palace Ochu', nameZh: '地宮大口花' },
-            { nameEn: 'Palace Seedling', nameZh: '地宮幼苗' },
-            { nameEn: 'Palace Morbol', nameZh: '地宮魔界花' }
-        ], mobTips: '黏液怪開戰約 20 秒後會自爆，造成大範圍高傷害，建議盡快擊殺或遠離；若不慎踩到蛙變陷阱，務必遠離眼鏡蛇，牠的「捕食」技能會直接秒殺處於青蛙狀態的玩家。', bossTips: '開場連續使用 4 次貫穿攻擊，接著召喚 2 隻黃蜂小怪，須盡快擊殺，否則牠們會使用「終極針」造成約自身 70% 最大 HP 的傷害；之後進入毒霧、金塵 AoE 與落葉全體傷害的循環，留意持續中毒效果。' },
-        { range: '21-30', bossFloor: 30, needsTranslation: true, verified: false, bossNameZh: '寧吉茲濟達', bossNameEn: 'Ningishzida', notes: '柱型房間內壁陷阱密集。', mobNames: [
-            { nameEn: 'Palace Dullahan', nameZh: '地宮無頭騎士' },
-            { nameEn: 'Palace Puk', nameZh: '地宮跳蜥' },
-            { nameEn: 'Palace Drake', nameZh: '地宮火蛟' },
-            { nameEn: 'Palace Adamantoise', nameZh: '地宮精金龜' },
-            { nameEn: 'Palace Peiste', nameZh: '地宮毒蜥蜴' },
-            { nameEn: 'Palace Wivre', nameZh: '地宮犀蜴' },
-            { nameEn: 'Palace Minotaur', nameZh: '地宮彌諾陶洛斯' },
-            { nameEn: 'Palace Spriggan', nameZh: '地宮魔石精' },
-            { nameEn: 'Palace Centaur', nameZh: '地宮半人馬' },
-            { nameEn: 'Palace Skatene', nameZh: '地宮斯卡尼特' },
-            { nameEn: 'Palace Effigy', nameZh: '地宮泥岩巨獸' },
-            { nameEn: 'Palace Marolith', nameZh: '地宮馬洛里石' }
-        ], mobTips: '彌諾陶洛斯是會巡邏的小怪，牠的「百十一噗回轉」沒有讀條預兆就會擊退範圍內的人，即使擋下傷害也無法免疫擊退，建議保持距離、避免正面撞上巡邏中的牠。', bossTips: '持續對隨機目標放置火球與冰球，地面會留下灼燒／冰凍潑濺痕跡，盡量站在場地邊緣躲避；Boss 也會不時使用一招沒有預兆的扇形撕裂爪攻擊，別站在正面；當 Boss 跑到房間中央時，代表即將使用全場混亂 AoE，此時全員需要靠近 Boss 周圍的安全圈才能免疫混亂狀態。' },
-        { range: '31-40', bossFloor: 40, needsTranslation: true, verified: false, bossNameZh: '伊休妲', bossNameEn: 'Ixtab', notes: '怪物換成「噩夢」系列，整體仍以壁陷阱為主要威脅來源。', mobNames: [
-            { nameEn: 'Nightmare Bogy', nameZh: '噩夢妖魂' },
-            { nameEn: 'Nightmare Succubus', nameZh: '噩夢夢魔' },
-            { nameEn: 'Nightmare Hecteyes', nameZh: '噩夢百目妖' },
-            { nameEn: 'Nightmare Ogre', nameZh: '噩夢食人魔' },
-            { nameEn: 'Nightmare Mummy', nameZh: '噩夢木乃伊' },
-            { nameEn: 'Nightmare Eye', nameZh: '噩夢之眼' },
-            { nameEn: 'Nightmare Catoblepas', nameZh: '噩夢卡托布萊帕斯' },
-            { nameEn: 'Nightmare Dahak', nameZh: '噩夢扎哈克' },
-            { nameEn: 'Nightmare Troubadour', nameZh: '噩夢行吟詩人' },
-            { nameEn: 'Nightmare Monk', nameZh: '噩夢鬼魚' },
-            { nameEn: 'Nightmare Haagenti', nameZh: '噩夢哈加提' },
-            { nameEn: 'Nightmare Gourmand', nameZh: '噩夢貪吃鬼' }
-        ], mobTips: null, bossTips: '開場連續 4 次地火噴發，同時召喚 2 隻小怪，務必在 Boss 使用附加獵物狀態的嘶吼技能前解決小怪，否則獵物狀態會讓小怪使用龍捲風直接秒殺目標；之後留意扇形炎焰、瘟疫 AoE 與結尾的全體暗焰傷害。' },
-        { range: '41-50', bossFloor: 50, needsTranslation: true, verified: false, bossNameZh: '漆黑的艾達', bossNameEn: 'Edda Blackbosom', notes: '寶箱怪開始改為金寶箱型態且免疫昏厥；打贏此區段後可解鎖日後存檔直接從 51 層開始挑戰的選項。', mobNames: [
-            { nameEn: 'Nightmare Gnat', nameZh: '噩夢巨蠅' },
-            { nameEn: 'Nightmare Demon', nameZh: '噩夢惡魔' },
-            { nameEn: 'Nightmare Manticore', nameZh: '噩夢曼提克' },
-            { nameEn: 'Nightmare Gargoyle', nameZh: '噩夢石像鬼' },
-            { nameEn: 'Nightmare Knight', nameZh: '噩夢騎士' },
-            { nameEn: 'Nightmare Bhoot', nameZh: '噩夢浮靈' },
-            { nameEn: 'Nightmare Wraith', nameZh: '噩夢幽靈' },
-            { nameEn: 'Nightmare Hellhound', nameZh: '噩夢地獄犬' },
-            { nameEn: 'Nightmare Persona', nameZh: '噩夢假面' },
-            { nameEn: 'Nightmare Bloodguard', nameZh: '噩夢血衛' },
-            { nameEn: 'Nightmare Gravekeeper', nameZh: '噩夢墓穴守衛' },
-            { nameEn: 'Nightmare Dragon', nameZh: '噩夢巨龍' }
-        ], mobTips: null, bossTips: '務必緊貼 Boss 移動以躲開大範圍的吸收型 AoE（月環與貼地型交替施放，會吸收全額傷害回血）；中段會疊加持續傷害型減益，全場技能的傷害會隨前述吸收型 AoE 的命中次數增加，拖得越久越危險；凝視類技能記得轉身應對，以避免陷入混亂狀態；留意場邊會有不可選取的石像鬼管事放出直線 AoE，不要站在其延伸路線上。' },
-        { range: '51-60', bossFloor: 60, needsTranslation: true, verified: false, bossNameZh: '深黑騎士', bossNameEn: 'The Black Rider', notes: '此區段是許多玩家刷經驗值的熱門地點，仍需留意壁陷阱。', mobNames: [
+        { range: '51-60', bossFloor: 60, needsTranslation: false, verified: true, bossNameZh: '深黑騎士', bossNameEn: 'The Black Rider', notes: '此區段是許多玩家刷經驗值的熱門地點，仍需留意壁陷阱。', mobNames: [
             { nameEn: 'Palace Pudding', nameZh: '地宮軟糊怪' },
             { nameEn: 'Palace Anubys', nameZh: '地宮阿努比斯' },
             { nameEn: 'Palace Gremlin', nameZh: '地宮格雷姆林' },
@@ -112,7 +44,7 @@ window.DEEP_DUNGEON_DATA.potd = {
             { nameEn: 'Palace Arch Demon', nameZh: '地宮上級惡魔' },
             { nameEn: 'Palace Soulflayer', nameZh: '地宮奪魂魔' }
         ], mobTips: null, bossTips: '場邊蠟燭會噴出火焰造成擊退效果，被擊退進入火焰爆炸範圍會受到約 70% 最大 HP 的高額傷害，請確保有擊退免疫或提前移動到安全位置；地面會留下不會疊加的流血持續傷害水漬，可固定站在兩座火燭之間躲避。' },
-        { range: '61-70', bossFloor: 70, needsTranslation: true, verified: false, bossNameZh: '水虎龍亞夸虜', bossNameEn: 'Yaquaru', notes: '延續 51-60 層的怪物強度與壁陷阱分布。', mobNames: [
+        { range: '61-70', bossFloor: 70, needsTranslation: false, verified: true, bossNameZh: '水虎龍亞夸虜', bossNameEn: 'Yaquaru', notes: '延續 51-60 層的怪物強度與壁陷阱分布。', mobNames: [
             { nameEn: 'Palace Elbst', nameZh: '地宮水龍蜥' },
             { nameEn: 'Palace Raptor', nameZh: '地宮盜龍' },
             { nameEn: 'Palace Tyrannosaur', nameZh: '地宮暴龍' },
@@ -125,32 +57,11 @@ window.DEEP_DUNGEON_DATA.potd = {
             { nameEn: 'Palace Pteranodon', nameZh: '地宮無齒翼龍' },
             { nameEn: 'Palace Mylodon', nameZh: '地宮磨齒獸' }
         ], mobTips: null, bossTips: 'Boss 使用浸濕技能後會在原地留下不會傷人、但會為自身加速的水漬，記得把 Boss 拖離水漬範圍；尾擊技能會附加沉重狀態，若還處於沉重就立即衝刺移動，以避開緊接而來的隨機單體雷擊 AoE。' },
-        { range: '71-80', bossFloor: 80, needsTranslation: true, verified: false, bossNameZh: '古丹納', bossNameEn: 'Gudanna', notes: '整體難度持平，主要留意壁陷阱位置。', mobNames: [
-            { nameEn: 'Palace Anzu', nameZh: '地宮安祖' },
-            { nameEn: 'Palace Wolf', nameZh: '地宮黑狼' },
-            { nameEn: 'Palace Bandersnatch', nameZh: '地宮斑攫獸' },
-            { nameEn: 'Palace Bear', nameZh: '地宮棕熊' },
-            { nameEn: 'Palace Dhalmel', nameZh: '地宮長頸駝' },
-            { nameEn: 'Palace Cyclops', nameZh: '地宮獨眼巨人' },
-            { nameEn: 'Palace Sasquatch', nameZh: '地宮大腳巨猿' },
-            { nameEn: 'Palace Aurochs', nameZh: '地宮原牛' },
-            { nameEn: 'Bird of the Palace', nameZh: '地宮妖鳥' },
-            { nameEn: 'Palace Coeurl', nameZh: '地宮長鬚豹' },
-            { nameEn: 'Palace Lion', nameZh: '地宮雄獅' }
-        ], mobTips: '妖鳥平時威脅不高，但牠的「天啟」會對隨機玩家放置範圍 AoE 並附加減益，混戰時容易被忽略，建議優先留意並優先清除。', bossTips: 'Boss 會跑到場地兩端使用大範圍扇形重擊，同時隨機對單人放置會產生龍捲風的定點 AoE，被捲入龍捲風會被緩慢吸入並持續遭受雷擊傷害，請盡快脫離；Boss 殘血 10% 時會施放一次大型隕石 AoE，造成全體約 80% 最大 HP 的傷害，務必預先安排減傷或治療應對。' },
-        { range: '81-90', bossFloor: 90, needsTranslation: true, verified: false, bossNameZh: '爆彈怪教母', bossNameEn: 'The Godmother', notes: '此區段有一處已知但可繞開的壁陷阱。', mobNames: [
-            { nameEn: 'Palace Bomb', nameZh: '地宮爆彈怪' },
-            { nameEn: 'Palace Wamoura', nameZh: '地宮瓦魔蛾' },
-            { nameEn: 'Palace Wamouracampa', nameZh: '地宮瓦魔蛾幼蟲' },
-            { nameEn: 'Palace Vinegaroon', nameZh: '地宮醋蠍龍' },
-            { nameEn: 'Palace Chimera', nameZh: '地宮奇美拉' },
-            { nameEn: 'Flame Dragon', nameZh: '炎龍' },
-            { nameEn: 'Palace Gallimimus', nameZh: '地宮似雞龍' },
-            { nameEn: 'Palace Hapalit', nameZh: '地宮哈帕利特' },
-            { nameEn: 'Palace Worm', nameZh: '地宮巨蟲' },
-            { nameEn: 'Palace Claw', nameZh: '地宮巨鉗蝦' },
-            { nameEn: 'Palace Eruca', nameZh: '地宮毛蟲' }
-        ], mobTips: '爆彈怪拉怪後約 37 秒會自爆，造成約 70% 最大 HP 傷害，請盡快擊殺；巨蟲同樣有激怒機制，需提高警覺，避免戰鬥拖得太久。', bossTips: '戰鬥中會召喚灰色炸彈小怪並開始讀取爆裂技能，必須在它施放前擊殺，否則會造成全場約 80% 最大 HP 傷害；後段會召喚嬌氣炸彈並配合 Boss 讀取大爆裂（約 99% 最大 HP 傷害），攻擊嬌氣炸彈可以把它推往 Boss 身邊藉此中斷施法，同時留意場上其他未鎖定目標、會自爆的炸彈型小怪。' },
+        { range: '71-80', bossFloor: 80, needsTranslation: false, verified: true, bossNameZh: '古丹納', bossNameEn: 'Gudanna', notes: '整體難度持平，主要留意壁陷阱位置。', mobNames: [], mobTips: null, bossTips: 'Boss 會跑到場地兩端使用大範圍扇形重擊，同時隨機對單人放置會產生龍捲風的定點 AoE，被捲入龍捲風會被緩慢吸入並持續遭受雷擊傷害，請盡快脫離；Boss 殘血 10% 時會施放一次大型隕石 AoE，造成全體約 80% 最大 HP 的傷害，務必預先安排減傷或治療應對。' },
+        { range: '81-90', bossFloor: 90, needsTranslation: false, verified: true, bossNameZh: '爆彈怪教母', bossNameEn: 'The Godmother', notes: '此區段有一處已知但可繞開的壁陷阱。', mobNames: [
+            { nameEn: 'Palace Bomb', nameZh: '地宮爆彈怪', tips: '拉怪後約 37 秒會自爆，造成約自身最大 HP 70% 的範圍傷害，看到牠開始倒數要優先擊殺或盡快遠離。' },
+            { nameEn: 'Palace Worm', nameZh: '地宮巨蟲', tips: '帶有激怒機制，拖得越久攻擊力越高，建議盡快解決、避免戰鬥時間過長。' }
+        ], mobTips: null, bossTips: '戰鬥中會召喚灰色炸彈小怪並開始讀取爆裂技能，必須在它施放前擊殺，否則會造成全場約 80% 最大 HP 傷害；後段會召喚眩暈炸彈並配合 Boss 讀取大爆裂（約 99% 最大 HP 傷害），攻擊眩暈炸彈可以把它推往 Boss 身邊藉此中斷施法，同時留意場上其他未鎖定目標、會自爆的炸彈型小怪。' },
         { range: '91-100', bossFloor: 100, needsTranslation: true, verified: false, bossNameZh: '死靈術士尼博斯', bossNameEn: 'Nybeth Obdilord', notes: '這是劇情樓層的最後區段，91-95 層每房間 2-3 隻怪、96-99 層增加到 3-4 隻，仍需留意壁陷阱。', mobNames: [
             { nameEn: 'Palace Wraith', nameZh: '地宮幽靈' },
             { nameEn: 'Palace Mummy', nameZh: '地宮木乃伊' },

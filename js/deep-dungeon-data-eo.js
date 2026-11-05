@@ -1,6 +1,8 @@
 // 正統優雷卡 攻略資料
 // 內容整理自 https://www.ddcompendium.com/ 的樓層機制資料，以繁體中文重新改寫說明文字。
 // 小怪與 Boss 中文譯名已依灰機wiki（ff14.huijiwiki.com）的中國服官方譯名簡轉繁校正。
+// 圖片（選填）：mobNames 項目與 floorSets 可各自加上 images / bossImages 陣列（一張或多張路徑），
+// 圖檔放在 img/deep-dungeon/eo/ 底下，例如 images: ['img/deep-dungeon/eo/orthos-grenade.jpg']。
 window.DEEP_DUNGEON_DATA = window.DEEP_DUNGEON_DATA || {};
 window.DEEP_DUNGEON_DATA.eo = {
     key: 'eo',

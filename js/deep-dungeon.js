@@ -73,6 +73,20 @@ window.DeepDungeon = (function () {
         return `${escapeHtml(en)} <span class="pending">(中文名稱待補)</span>`;
     }
 
+    // 怪物/Boss 圖片：images 為圖片路徑陣列，可放一張或多張；點圖可開新頁看原圖
+    function renderCreatureImages(images) {
+        if (!images || images.length === 0) return '';
+        return `
+            <div class="creature-images">
+                ${images.map(src => `
+                    <a href="${escapeHtml(src)}" target="_blank" rel="noopener">
+                        <img src="${escapeHtml(src)}" alt="" loading="lazy">
+                    </a>
+                `).join('')}
+            </div>
+        `;
+    }
+
     // 小怪攻略區塊：每隻小怪各自獨立一張卡片顯示名稱與攻略，而非擠在同一段文字裡
     function renderMobBlock(fs) {
         const mobNames = fs.mobNames || [];
@@ -86,6 +100,7 @@ window.DeepDungeon = (function () {
                         ${mobNames.map(m => `
                             <div class="mob-entry">
                                 <div class="mob-entry-name">${formatCreatureName(m.nameZh, m.nameEn)}</div>
+                                ${renderCreatureImages(m.images)}
                                 <div class="mob-entry-tips">${escapeHtmlMultiline(m.tips || '尚無攻略資料')}</div>
                             </div>
                         `).join('')}
@@ -126,6 +141,7 @@ window.DeepDungeon = (function () {
                         <div class="boss-block">
                             <div class="block-label">Boss 攻略</div>
                             <div class="boss-name">${formatCreatureName(fs.bossNameZh, fs.bossNameEn)}</div>
+                            ${renderCreatureImages(fs.bossImages)}
                             <div>${escapeHtmlMultiline(fs.bossTips || '尚無攻略資料')}</div>
                         </div>
                     </div>
