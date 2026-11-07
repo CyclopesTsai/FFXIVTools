@@ -62,19 +62,9 @@ window.DEEP_DUNGEON_DATA.potd = {
             { nameEn: 'Palace Bomb', nameZh: '地宮爆彈怪', tips: '拉怪後約 37 秒會自爆，造成約自身最大 HP 70% 的範圍傷害，看到牠開始倒數要優先擊殺或盡快遠離。' },
             { nameEn: 'Palace Worm', nameZh: '地宮巨蟲', tips: '帶有激怒機制，拖得越久攻擊力越高，建議盡快解決、避免戰鬥時間過長。' }
         ], mobTips: null, bossTips: '戰鬥中會召喚灰色炸彈小怪並開始讀取爆裂技能，必須在它施放前擊殺，否則會造成全場約 80% 最大 HP 傷害；後段會召喚眩暈炸彈並配合 Boss 讀取大爆裂（約 99% 最大 HP 傷害），攻擊眩暈炸彈可以把它推往 Boss 身邊藉此中斷施法，同時留意場上其他未鎖定目標、會自爆的炸彈型小怪。' },
-        { range: '91-100', bossFloor: 100, needsTranslation: true, verified: false, bossNameZh: '死靈術士尼博斯', bossNameEn: 'Nybeth Obdilord', notes: '這是劇情樓層的最後區段，91-95 層每房間 2-3 隻怪、96-99 層增加到 3-4 隻，仍需留意壁陷阱。', mobNames: [
-            { nameEn: 'Palace Wraith', nameZh: '地宮幽靈' },
-            { nameEn: 'Palace Mummy', nameZh: '地宮木乃伊' },
-            { nameEn: 'Palace Swarm', nameZh: '地宮蠅群' },
-            { nameEn: 'Palace Roselet', nameZh: '地宮小紅花' },
-            { nameEn: 'Dark Dragon', nameZh: '暗龍' },
-            { nameEn: 'Palace Hippocerf', nameZh: '地宮駿雕' },
-            { nameEn: 'Palace Iron Corse', nameZh: '地宮鐵面腐屍' },
-            { nameEn: 'Palace Corse', nameZh: '地宮巨人腐屍' },
-            { nameEn: 'Palace Knight', nameZh: '地宮騎士' },
-            { nameEn: 'Palace Gourmand', nameZh: '地宮貪吃鬼' },
-            { nameEn: 'Palace Gravekeeper', nameZh: '地宮墓穴守衛' }
-        ], mobTips: '此處怪物多為不死系且採「接近感知」，除了蠅群、小紅花、駿雕以外，幾乎都能用「基路伯化」類魔陶器 1-2 擊解決，但建議保留至少一次使用機會給 Boss 戰前清場。', bossTips: '戰鬥分為四個階段，Boss 在每次階段轉換時都會召喚不死系小怪，這些小怪若只是打死而未徹底「清除」，過一段時間會原地復活，建議使用基路伯化類魔陶器或強力 AoE 一次清乾淨；最終階段會固定輪替死亡宣告、虛無、痛苦之言與束縛技能，死亡宣告可用艾斯那淨化解除。' },
+        { range: '91-100', bossFloor: 100, needsTranslation: false, verified: true, bossNameZh: '死靈術士尼博斯', bossNameEn: 'Nybeth Obdilord', notes: '這是劇情樓層的最後區段，91-95 層每房間 2-3 隻怪、96-99 層增加到 3-4 隻，仍需留意壁陷阱。此處怪物多為不死系且採「接近感知」，除了蠅群、小紅花、駿雕以外，幾乎都能用「基路伯化」魔陶器 1-2 擊解決，但建議保留至少兩個給 Boss 戰使用。', mobNames: [
+            { nameEn: 'Dark Dragon', nameZh: '暗龍', tips: '這隻打很痛' }
+        ], mobTips: null, bossTips: '戰鬥分為四個階段，Boss 在每次階段轉換時都會召喚不死系小怪，這些小怪若只是打死而未徹底「清除」，過一段時間會原地復活，使用基路伯化魔陶器可給予小怪大量傷害還可以把屍體燒掉；最終階段會固定輪替死亡宣告、虛無、痛苦之言與束縛技能，死亡宣告可用艾斯那淨化解除。' },
         { range: '101-110', bossFloor: 110, needsTranslation: true, verified: false, bossNameZh: '阿利坎托', bossNameEn: 'Alicanto', notes: '怪物與陷阱配置幾乎是 51-60 層的高數值版本。', mobNames: [
             { nameEn: 'Deep Palace Sprite', nameZh: '深宮元精' },
             { nameEn: 'Deep Palace Ziz', nameZh: '深宮席茲' },
