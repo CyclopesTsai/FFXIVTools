@@ -153,7 +153,7 @@ window.DEEP_DUNGEON_DATA.eo = {
         },
         {
             range: '71-80',
-            bossFloor: 80, needsTranslation: false, verified: false,
+            bossFloor: 80, needsTranslation: false, verified: true,
             bossNameZh: '原型卡利亞',
             bossNameEn: 'Proto-Kaliya',
             notes: '71-73 層已知會出現大量地雷陷阱，若能提前探路可以輕鬆不少，坦克或補師可善用這點爭取時間；公認是全程最危險的一個區段，特別要提防 73、76 層開始出現的強力巡邏怪，建議這段開始積極使用減速或群體控場，並預留至少 7 分鐘應付 80 層王戰。',
