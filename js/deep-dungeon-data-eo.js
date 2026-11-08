@@ -163,7 +163,7 @@ window.DEEP_DUNGEON_DATA.eo = {
                 { nameEn: 'Orthos Primelephas', nameZh: '正統曙象', tips: '衝刺後會快速補上一記範圍技。' },
                 { nameEn: 'Orthos Gulo Gulo', nameZh: '正統狼獾', tips: '殺人爪會連續使用兩次前方扇形攻擊，看清牠動作完結後再靠近比較安全。' },
                 { nameEn: 'Orthos Thunderbeast', nameZh: '正統雷獸', tips: '若伏下不動代表即將詠唱無預兆的大範圍攻擊，可以帶著牠繞圈走動、留意牠腳下範圍判定是否停下；若有人離太遠牠也會補上大範圍環形攻擊。' },
-                { nameEn: 'Orthos Sasquatch', nameZh: '正統大腳巨猿', tips: '吃香蕉的動作會有延遲才發動超大範圍攻擊，可用視線阻擋，建議聽到特殊音效時立刻停止探索並找掩護。' },
+                { nameEn: 'Orthos Sasquatch', nameZh: '正統大腳巨猿', warning: '脫戰施放', tips: '吃香蕉的動作會有延遲才發動超大範圍攻擊，可用視線阻擋，建議聽到特殊音效時立刻停止探索並找掩護。' },
                 { nameEn: 'Orthos Flamebeast', nameZh: '正統焰獸', tips: '前方扇形範圍無法用視線阻擋，需留意位置。' },
                 { nameEn: 'Orthos Skatene', nameZh: '正統斯卡尼特', tips: '靠聲音感知仇恨，中招會附加睡眠狀態，都需要特別提防。' },
                 { nameEn: 'Bird of Orthos', nameZh: '妖鳥', tips: '靠視覺感知仇恨，牠的 360 度凝視技能會附加混亂狀態（持續 30 秒），混亂中若被接續的無預兆大範圍攻擊命中幾乎必死，看到牠開始凝視動作務必立刻轉身背對閃避。' }
@@ -178,11 +178,12 @@ window.DEEP_DUNGEON_DATA.eo = {
             bossNameEn: 'Administrator',
             notes: '此區段銀箱有相當高機率開出分身召喚物，但不會掉落重生類魔科學器；場地明顯變大，建議盡早探路找出口，接戰時保持中至近距離會比較容易閃避招式，第一次挑戰可考慮在此區段開場使用重生類魔科學器，並預留至少 7 分鐘應付 90 層王戰。',
             mobNames: [
-                { nameEn: 'Orthos Catoblepas', nameZh: '正統卡托布萊帕斯', tips: '有超大範圍的背對機制，沒有背對成功會被附加異常狀態，看不到牠的名字代表還在安全距離之外，務必提早反應。' },
+                { nameEn: 'Orthos Catoblepas', nameZh: '正統卡托布萊帕斯', warning: '脫戰施放', tips: '超大範圍的背對機制，沒有背對成功會被附加異常狀態，看不到牠的名字代表還在安全距離之外，務必提早反應。' },
                 { nameEn: 'Orthos Hecteyes', nameZh: '正統百目妖', tips: '靠聲音感知仇恨，牠的洗滌是超大範圍攻擊且無法被暈眩或打斷，相當浪費時間，建議能繞開就繞開。' },
                 { nameEn: 'Orthoiron Corse', nameZh: '正統鐵面腐屍', tips: '扇形攻擊有延遲提示，正常應對即可。' },
                 { nameEn: 'Orthos Gourmand', nameZh: '正統貪吃鬼', tips: '吸氣後會快速補上前方扇形攻擊，看到動作要提前準備閃避。' },
-                { nameEn: 'Orthos Pegasus', nameZh: '正統黑天馬', tips: '嘶嘯是有預兆的大範圍攻擊，留意詠唱並提前拉開距離。' }
+                { nameEn: 'Orthos Pegasus', nameZh: '正統黑天馬', tips: '嘶嘯是有預兆的大範圍攻擊，留意詠唱並提前拉開距離。' },
+                { nameEn: 'Orthos Specter', nameZh: '正統妖影', tips: '靠範圍感知仇恨且會巡邏，會左右交替使用接近 210 度的大範圍橫掃，收尾會補上環形或圓形大範圍爆發，範圍提示都要等讀條快結束才出現，需提早抓好應對方向。' }
             ],
             mobTips: null,
             bossTips: '建議直接看影片 https://youtu.be/S1kNewPKCiQ'

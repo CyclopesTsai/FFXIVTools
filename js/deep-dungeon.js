@@ -101,7 +101,7 @@ window.DeepDungeon = (function () {
                             <div class="mob-entry">
                                 <div class="mob-entry-name">${formatCreatureName(m.nameZh, m.nameEn)}</div>
                                 ${renderCreatureImages(m.images)}
-                                <div class="mob-entry-tips">${escapeHtmlMultiline(m.tips || '尚無攻略資料')}</div>
+                                <div class="mob-entry-tips">${m.warning ? `<span class="status-tag mob-warning-tag">${escapeHtml(m.warning)}</span>` : ''}${escapeHtmlMultiline(m.tips || '尚無攻略資料')}</div>
                             </div>
                         `).join('')}
                     </div>
