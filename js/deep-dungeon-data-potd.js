@@ -74,110 +74,30 @@ window.DEEP_DUNGEON_DATA.potd = {
             { nameEn: 'Deep Palace Nanka', nameZh: '深宮南加', tips: '即使脫離戰鬥也會持續對隨機玩家放出水滴 AoE，不要大意。' }
         ], mobTips: null, bossTips: '開場同樣是連續潑酸攻擊，接著召喚黃蜂小怪，牠們的終極針會造成約 70% 最大 HP 傷害且會不斷嘗試施放直到命中為止，務必優先擊殺。' },
         { range: '121-130', bossFloor: 130, needsTranslation: true, verified: false, bossNameZh: '埃爾法德', bossNameEn: 'Alfard', notes: '此區段壁陷阱同樣密集。', mobNames: [
-            { nameEn: 'Deep Palace Dullahan', nameZh: '深宮無頭騎士' },
-            { nameEn: 'Deep Palace Pteroc', nameZh: '深宮翼蜥' },
-            { nameEn: 'Deep Palace Biast', nameZh: '深宮雷蛟' },
-            { nameEn: 'Deep Palace Spriggan', nameZh: '深宮魔石精' },
-            { nameEn: 'Deep Palace Adamantoise', nameZh: '深宮精金龜' },
-            { nameEn: 'Deep Palace Wivre', nameZh: '深宮犀蜴' },
-            { nameEn: 'Deep Palace Minotaur', nameZh: '深宮彌諾陶洛斯' },
-            { nameEn: 'Deep Palace Basilisk', nameZh: '深宮石蜥蜴' },
-            { nameEn: 'Deep Palace Centaur', nameZh: '深宮半人馬' },
-            { nameEn: 'Deep Palace Skatene', nameZh: '深宮斯卡尼特' },
-            { nameEn: 'Deep Palace Effigy', nameZh: '深宮泥岩巨獸' },
-            { nameEn: 'Deep Palace Urolith', nameZh: '深宮烏洛里石' }
+            { nameEn: 'Deep Palace Minotaur', nameZh: '深宮彌諾陶洛斯' }
         ], mobTips: '彌諾陶洛斯的「百十一噗回轉」沒有預兆就會擊退範圍內玩家，清怪時請保持警覺，避免被巡邏中的牠意外命中。', bossTips: '機制與 30 層的 Boss 相同（火球／冰球交錯放置，搭配扇形撕裂爪與中央全場混亂 AoE），差異在於本層混亂 AoE 的讀條速度更快，看到 Boss 往中央移動要立刻跟上集合，否則來不及站到安全位置。' },
         { range: '131-140', bossFloor: 140, needsTranslation: true, verified: false, bossNameZh: '阿普切', bossNameEn: 'Ah Puch', notes: '壁陷阱持續增加。', mobNames: [
-            { nameEn: 'Deep Palace Soul', nameZh: '深宮游魂' },
-            { nameEn: 'Deep Palace Gourmand', nameZh: '深宮貪吃鬼' },
-            { nameEn: 'Deep Palace Hecteyes', nameZh: '深宮百目妖' },
-            { nameEn: 'Deep Palace Ogre', nameZh: '深宮食人魔' },
-            { nameEn: 'Deep Palace Ahriman', nameZh: '深宮冥鬼之眼' },
-            { nameEn: 'Deep Palace Mummy', nameZh: '深宮木乃伊' },
-            { nameEn: 'Deep Palace Guard', nameZh: '深宮護衛' },
-            { nameEn: 'Deep Palace Catoblepas', nameZh: '深宮卡托布萊帕斯' },
-            { nameEn: 'Deep Palace Dahak', nameZh: '深宮扎哈克' },
-            { nameEn: 'Deep Palace Troubador', nameZh: '深宮行吟詩人' },
-            { nameEn: 'Deep Palace Monk', nameZh: '深宮鬼魚' },
-            { nameEn: 'Deep Palace Taurus', nameZh: '深宮牛頭魔' }
+            { nameEn: 'Deep Palace Ahriman', nameZh: '深宮冥鬼之眼' }
         ], mobTips: '冥鬼之眼的「5 級石化」是沒有預兆的扇形 AoE，命中會直接附加石化，正面遭遇時務必避免站在牠面前，盡量繞到側邊或背後擊殺。', bossTips: '與 40 層的 Boss 機制相同，但本層小怪若在嘶吼階段仍存活，獵物狀態會使牠們使出必定秒殺全隊的技能，清小怪的時間壓力更高；本層 Boss 對「基路伯化」類傷害特別脆弱，可考慮直接用基路伯化在一分鐘內解決戰鬥。' },
         { range: '141-150', bossFloor: 150, needsTranslation: true, verified: false, bossNameZh: '提西福涅', bossNameEn: 'Tisiphone', notes: '戰鬥節奏開始吃緊，壁陷阱持續增加。', mobNames: [
-            { nameEn: 'Deep Palace Ked', nameZh: '深宮巨虻' },
             { nameEn: 'Deep Palace Demon', nameZh: '深宮惡魔' },
-            { nameEn: 'Deep Palace Manticore', nameZh: '深宮曼提克' },
-            { nameEn: 'Deep Palace Gargoyle', nameZh: '深宮石像鬼' },
-            { nameEn: 'Deep Palace Knight', nameZh: '深宮騎士' },
-            { nameEn: 'Deep Palace Bhoot', nameZh: '深宮浮靈' },
-            { nameEn: 'Deep Palace Wraith', nameZh: '深宮幽靈' },
-            { nameEn: 'Deep Palace Hellhound', nameZh: '深宮地獄犬' },
-            { nameEn: 'Deep Palace Persona', nameZh: '深宮假面' },
-            { nameEn: 'Deep Palace Succubus', nameZh: '深宮夢魔' },
-            { nameEn: 'Onyx Dragon', nameZh: '奧尼克斯龍' },
-            { nameEn: 'Deep Palace Keeper', nameZh: '深宮守衛' }
+            { nameEn: 'Deep Palace Succubus', nameZh: '深宮夢魔' }
         ], mobTips: '夢魔即使脫離戰鬥也會持續對隨機玩家放出虛空熾炎 AoE，請提早留意；惡魔的「大漩渦」是讀條式自爆技能、可被打斷，建議儘早處理或預先打斷以免承受大量傷害。', bossTips: 'Boss 每輪會召喚不同種類的小怪配合技能：石像鬼小怪會搭配大範圍直線 AoE；殭屍小怪會緩慢爬向玩家，碰到後會造成束縛（建議優先擊殺，或用遠程持續輸出拖住）；另有延遲施放定點 AoE 的石像魔與可留著輸出的夢魔小怪，夢魔會被 Boss 吸收剩餘血量強化自身；整場偶爾會施放一次全屏高傷害的血雨 AoE（連敵方單位也會受傷），走位時留意不要被束縛卡住。' },
         { range: '151-160', bossFloor: 160, needsTranslation: true, verified: false, bossNameZh: '非生騎士', bossNameEn: 'Todesritter', notes: '巡邏怪消失、視野大幅提升，但誘餌陷阱風險隨樓層提高；金寶袋開始出現，建議盡快用掉感知寶藏類魔陶器，拾取戰利品前請先確認陷阱位置。', mobNames: [
-            { nameEn: 'Deep Palace Shabti', nameZh: '深宮沙布提' },
-            { nameEn: 'Deep Palace Pudding', nameZh: '深宮軟糊怪' },
-            { nameEn: 'Deep Palace Gremlin', nameZh: '深宮格雷姆林' },
-            { nameEn: 'Deep Palace Deepeye', nameZh: '深宮深瞳' },
-            { nameEn: 'Deep Palace Pot', nameZh: '深宮魔力罐' },
-            { nameEn: 'Deep Palace Marolith', nameZh: '深宮馬洛里石' },
             { nameEn: 'Deep Palace Imp', nameZh: '深宮小惡魔' },
-            { nameEn: 'Deep Palace Soulflayer', nameZh: '深宮奪魂魔' },
-            { nameEn: 'Deep Palace Taurus', nameZh: '深宮牛頭魔' },
-            { nameEn: 'Deep Palace Arch Demon', nameZh: '深宮上級惡魔' }
+            { nameEn: 'Deep Palace Soulflayer', nameZh: '深宮奪魂魔' }
         ], mobTips: '小惡魔與奪魂魔是這個區段要特別提防的小怪，兩者都帶有反擊或吸血類技能、能拖長戰鬥時間，建議優先處理或保持距離，避免被圍攻。', bossTips: '機制與 60 層的 Boss 完全相同，只是數值更高：一樣要注意蠟燭擊退後的爆炸傷害，以及不會疊加的流血水漬。' },
-        { range: '161-170', bossFloor: 170, needsTranslation: true, verified: false, bossNameZh: '虹蛇', bossNameEn: 'Yulunggu', notes: '整體難度比 151-160 層區段略低，仍需留意壁陷阱。', mobNames: [
-            { nameEn: 'Deep Palace Tursus', nameZh: '深宮圖蘇斯水龍蜥' },
-            { nameEn: 'Deep Palace Lindwurm', nameZh: '深宮森疾龍' },
-            { nameEn: 'Deep Palace Croc', nameZh: '深宮中音巨鱷' },
-            { nameEn: 'Deep Palace Sarcosuchus', nameZh: '深宮帝王鱷' },
-            { nameEn: 'Deep Palace Wivre', nameZh: '深宮犀蜴' },
-            { nameEn: 'Deep Palace Vinegaroon', nameZh: '深宮醋蠍龍' },
-            { nameEn: 'Deep Palace Mylodon', nameZh: '深宮磨齒獸' },
-            { nameEn: 'Deep Palace Archaeosaur', nameZh: '深宮古恐龍' },
-            { nameEn: 'Deep Palace Triceratops', nameZh: '深宮三角龍' },
-            { nameEn: 'Deep Palace Pteranodon', nameZh: '深宮無齒翼龍' },
-            { nameEn: 'Deep Palace Diplocaulus', nameZh: '深宮笠頭螈' }
-        ], mobTips: '恐龍系小怪攻擊力較高，正面硬吃傷害不小，建議避免同時拉動太多隻。', bossTips: '與 70 層的 Boss 機制相同，但浸濕水漬這次還會額外提升 Boss 的傷害輸出，務必確實把 Boss 拖出水漬範圍，否則輸出效率會被嚴重拖慢。' },
+        { range: '161-170', bossFloor: 170, needsTranslation: true, verified: false, bossNameZh: '虹蛇', bossNameEn: 'Yulunggu', notes: '整體難度比 151-160 層區段略低，仍需留意壁陷阱。', mobNames: [], mobTips: '恐龍系小怪攻擊力較高，正面硬吃傷害不小，建議避免同時拉動太多隻。', bossTips: '與 70 層的 Boss 機制相同，但浸濕水漬這次還會額外提升 Boss 的傷害輸出，務必確實把 Boss 拖出水漬範圍，否則輸出效率會被嚴重拖慢。' },
         { range: '171-180', bossFloor: 180, needsTranslation: true, verified: false, bossNameZh: '丹代恩索涅', bossNameEn: 'Dendainsonne', notes: '歡迎來到最終幾個區段：前段怪物較好應付，但最後幾層（187-189 尤其明顯）怪物強度大幅提升，建議省著用魔陶器，留到最後幾層再集中爆發使用。', mobNames: [
             { nameEn: 'Deep Palace Snowclops', nameZh: '深宮獨眼雪巨人' },
-            { nameEn: 'Deep Palace Bandersnatch', nameZh: '深宮斑攫獸' },
-            { nameEn: 'Deep Palace Bear', nameZh: '深宮白熊' },
-            { nameEn: 'Deep Palace Dhalmel', nameZh: '深宮長頸駝' },
-            { nameEn: 'Deep Palace Wolf', nameZh: '深宮白狼' },
-            { nameEn: 'Deep Palace Aurochs', nameZh: '深宮文森野牛' },
-            { nameEn: 'Deep Palace Lion', nameZh: '深宮雄獅' },
             { nameEn: 'Deep Palace Sasquatch', nameZh: '深宮大腳巨猿' },
-            { nameEn: 'Bird of the Palace', nameZh: '深宮妖鳥' },
-            { nameEn: 'Deep Palace Anzu', nameZh: '深宮安祖' },
-            { nameEn: 'Deep Palace Coeurl', nameZh: '深宮長鬚黑豹' }
+            { nameEn: 'Deep Palace Anzu', nameZh: '深宮安祖' }
         ], mobTips: '後段樓層常出現安祖與大腳巨猿的難纏組合：安祖的「狂亂」會造成暈眩並疊加易傷，大腳巨猿脫離戰鬥時會持續用「捶胸」疊加減益；雪巨人的揮砍與回轉重擊也完全沒有預兆，手上若有曼提克化類魔陶器可考慮在這類樓層使用清場。', bossTips: '機制與 80 層的 Boss 相同，但本層會在 Boss 殘血 15% 時進入狂暴：之後會不斷重複施放造成全隊約 80% 最大 HP 傷害的隕石技能，直到擊殺 Boss 或團滅為止。進入狂暴前請確保減傷技能與藥水能撐過最後衝刺，必要時可取消變身／飽食類 buff 來降低自身 HP 上限，減輕治療負擔。' },
         { range: '181-190', bossFloor: 190, needsTranslation: true, verified: false, bossNameZh: '爆彈怪教父', bossNameEn: 'The Godfather', notes: '此區段一般樓層被視為最危險的部分，87-89 層的怪物組合特別棘手，建議省著用魔陶器撐過前段，到後面再視情況使用形態變化／曼提克化等魔陶器清場；務必在此區段一開始就用掉手上的重生類魔陶器。', mobNames: [
-            { nameEn: 'Palace Wamoura', nameZh: '深宮瓦魔蛾' },
-            { nameEn: 'Palace Grenade', nameZh: '深宮榴彈怪' },
-            { nameEn: 'Palace Sprite', nameZh: '深宮元精' },
-            { nameEn: 'Palace Wamouracampa', nameZh: '深宮瓦魔蛾幼蟲' },
-            { nameEn: 'Palace Garm', nameZh: '深宮加姆' },
-            { nameEn: 'Palace Worm', nameZh: '深宮洪水巨蟲' },
-            { nameEn: 'Palace Crawler', nameZh: '深宮毛爬蟲' },
-            { nameEn: 'Palace Vindthurs', nameZh: '深宮風巨魔' },
-            { nameEn: 'Palace Archaeosaur', nameZh: '深宮古恐龍' },
-            { nameEn: 'Palace Claw', nameZh: '深宮巨鉗蝦' },
-            { nameEn: 'Flood Dragon', nameZh: '水龍' }
+            { nameEn: 'Palace Wamoura', nameZh: '深宮瓦魔蛾' }
         ], mobTips: '瓦魔蛾會用「蛻皮」治療其他敵人，若同時拉到兩隻瓦魔蛾務必優先集火擊殺其中一隻，否則牠們會互相回血打不完；除了 87-89 層外，86 層出現的怪物組合也偏隨機，有機會遇到棘手配置，建議保持警覺，不要掉以輕心。', bossTips: '機制與 90 層的 Boss 相同：清算型炸彈讀條時必須搶先擊殺，否則會造成約 80% 最大 HP 傷害並附加凍傷持續傷害；熾焰型炸彈可以用攻擊移動的方式中斷 Boss 的大爆裂技能（約 99% 最大 HP 傷害），過程中留意路上其他未鎖定、會自爆的炸彈型小怪。' },
         { range: '191-200', bossFloor: 200, needsTranslation: true, verified: false, bossNameZh: null, bossNameEn: null, notes: '怪物數量與每房間人數來到全程最高（3-4 人/房），多數怪物可用基路伯化類魔陶器以 2-3 擊解決；務必善用感知寶藏、咒印解除、全景等魔陶器加快清場速度。', mobNames: [
-            { nameEn: 'Deep Palace Mummy', nameZh: '深宮木乃伊' },
-            { nameEn: 'Deep Palace Iron Corse', nameZh: '深宮鐵面腐屍' },
-            { nameEn: 'Deep Palace Trap', nameZh: '深宮寒冰陷阱草' },
-            { nameEn: 'Deep Palace Hippogryph', nameZh: '深宮駿鷹' },
-            { nameEn: 'Deep Palace Wraith', nameZh: '深宮幽靈' },
-            { nameEn: 'Onyx Dragon', nameZh: '奧尼克斯龍' },
-            { nameEn: 'Deep Palace Fachan', nameZh: '深宮幽鬼之眼' },
-            { nameEn: 'Deep Palace Bicephalus', nameZh: '深宮雙頭腐屍' },
-            { nameEn: 'Deep Palace Knight', nameZh: '深宮騎士' },
-            { nameEn: 'Deep Palace Gourmand', nameZh: '深宮貪吃鬼' },
-            { nameEn: 'Deep Palace Keeper', nameZh: '深宮守衛' }
+            { nameEn: 'Deep Palace Fachan', nameZh: '深宮幽鬼之眼' }
         ], mobTips: '幽鬼之眼的「5 級即死」是沒有預兆的扇形 AoE，中招會直接陣亡，正面遭遇時務必避開牠面前的方向；部分殭屍系巡邏怪繞路閃避反而更浪費時間，建議直接正面清掉，同時留意哪些怪物免疫昏厥，別浪費控場技能。', bossTips: '本區段沒有真正的 Boss 戰，只要走到 200 層底端、觸碰終點的聖火盆或玻璃南瓜即可完成攻略（單人大約需要 35 秒跑過整層）。單人成功觸碰終點會自動取得稱號，過程中怪物數量明顯提升，建議保留足夠的重生類魔陶器應付最後衝刺。' }
     ],
     sourceUrl: 'https://www.ddcompendium.com/'
