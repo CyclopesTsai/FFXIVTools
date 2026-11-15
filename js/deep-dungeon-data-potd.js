@@ -66,33 +66,13 @@ window.DEEP_DUNGEON_DATA.potd = {
             { nameEn: 'Dark Dragon', nameZh: '暗龍', tips: '這隻打很痛' }
         ], mobTips: null, bossTips: '戰鬥分為四個階段，Boss 在每次階段轉換時都會召喚不死系小怪，這些小怪若只是打死而未徹底「清除」，過一段時間會原地復活，使用基路伯化魔陶器可給予小怪大量傷害還可以把屍體燒掉；最終階段會固定輪替死亡宣告、虛無、痛苦之言與束縛技能，死亡宣告可用艾斯那淨化解除。' },
         { range: '101-110', bossFloor: 110, needsTranslation: true, verified: false, bossNameZh: '阿利坎托', bossNameEn: 'Alicanto', notes: '怪物與陷阱配置幾乎是 51-60 層的高數值版本。', mobNames: [
-            { nameEn: 'Deep Palace Sprite', nameZh: '深宮元精' },
-            { nameEn: 'Deep Palace Ziz', nameZh: '深宮席茲' },
-            { nameEn: 'Deep Palace Doblyn', nameZh: '深宮礦妖蟲' },
-            { nameEn: 'Deep Palace Yarzon', nameZh: '深宮盲頭蟹' },
-            { nameEn: 'Goblin Adventurer', nameZh: '哥布林冒險者' },
-            { nameEn: 'Deep Palace Stag', nameZh: '深宮雄羚羊' },
-            { nameEn: 'Deep Palace Squirrel', nameZh: '深宮松鼠' },
-            { nameEn: 'Deep Palace Hippogryph', nameZh: '深宮駿鷹' },
-            { nameEn: 'Deep Palace Dung Beetle', nameZh: '深宮糞甲蟲' },
-            { nameEn: 'Deep Palace Ladybug', nameZh: '深宮花甲蟲' },
-            { nameEn: 'Deep Palace Hornet', nameZh: '深宮黃蜂' },
-            { nameEn: 'Deep Palace Gaelicat', nameZh: '深宮風箏貓' }
+            { nameEn: 'Deep Palace Hornet', nameZh: '深宮黃蜂' }
         ], mobTips: '同樣要留意黃蜂瀕死時的「終極針」，固定造成自身最大 HP 70% 的傷害並自爆，請盡快擊殺或遠離。', bossTips: '技能循環與 10 層的 Boss 幾乎相同：瞬發近戰、扇形 AoE、定點緩速 AoE、隨機單體 AoE，最後以全體風傷 AoE 收尾，熟悉前段機制即可直接套用應對方式。' },
         { range: '111-120', bossFloor: 120, needsTranslation: true, verified: false, bossNameZh: '榮光魔花', bossNameEn: 'Kirtimukha', notes: '此區段壁陷阱同樣密集。', mobNames: [
-            { nameEn: 'Deep Palace Gigantoad', nameZh: '深宮巨蟾蜍' },
-            { nameEn: 'Deep Palace Leech', nameZh: '深宮水蛭' },
-            { nameEn: 'Deep Palace Bifericeras', nameZh: '深宮對菊石' },
-            { nameEn: 'Deep Palace Pudding', nameZh: '深宮軟糊怪' },
-            { nameEn: 'Deep Palace Slime', nameZh: '深宮黏液怪' },
-            { nameEn: 'Deep Palace Cobra', nameZh: '深宮眼鏡蛇' },
-            { nameEn: 'Deep Palace Nanka', nameZh: '深宮南加' },
-            { nameEn: 'Deep Palace Salamander', nameZh: '深宮蠑螈' },
-            { nameEn: 'Deep Palace Ochu', nameZh: '深宮大口花' },
-            { nameEn: 'Deep Palace Biloko', nameZh: '深宮比洛克' },
-            { nameEn: 'Deep Palace Morbol', nameZh: '深宮魔界花' },
-            { nameEn: 'Deep Palace Seedling', nameZh: '深宮幼苗' }
-        ], mobTips: '黏液怪的自爆機制與一般史萊姆相同，開戰一段時間後務必優先解決；若踩到蛙變陷阱，務必遠離眼鏡蛇；南加即使脫離戰鬥也會持續對隨機玩家放出水滴 AoE，不要大意。', bossTips: '開場同樣是連續潑酸攻擊，接著召喚黃蜂小怪，牠們的終極針會造成約 70% 最大 HP 傷害且會不斷嘗試施放直到命中為止，務必優先擊殺或盡快遠離；若使用夢魔化類魔陶器，可以在第二波蜂群出現時用範圍技能一次清掉兩批小怪，非坦克請搭配減傷手段才能撐住。' },
+            { nameEn: 'Deep Palace Slime', nameZh: '深宮黏液怪', tips: '自爆機制與一般史萊姆相同，開戰一段時間後務必優先解決。' },
+            { nameEn: 'Deep Palace Cobra', nameZh: '深宮眼鏡蛇', tips: '若踩到蛙變陷阱，務必遠離眼鏡蛇。' },
+            { nameEn: 'Deep Palace Nanka', nameZh: '深宮南加', tips: '即使脫離戰鬥也會持續對隨機玩家放出水滴 AoE，不要大意。' }
+        ], mobTips: null, bossTips: '開場同樣是連續潑酸攻擊，接著召喚黃蜂小怪，牠們的終極針會造成約 70% 最大 HP 傷害且會不斷嘗試施放直到命中為止，務必優先擊殺。' },
         { range: '121-130', bossFloor: 130, needsTranslation: true, verified: false, bossNameZh: '埃爾法德', bossNameEn: 'Alfard', notes: '此區段壁陷阱同樣密集。', mobNames: [
             { nameEn: 'Deep Palace Dullahan', nameZh: '深宮無頭騎士' },
             { nameEn: 'Deep Palace Pteroc', nameZh: '深宮翼蜥' },
