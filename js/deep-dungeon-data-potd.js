@@ -65,10 +65,10 @@ window.DEEP_DUNGEON_DATA.potd = {
         { range: '91-100', bossFloor: 100, needsTranslation: false, verified: true, bossNameZh: '死靈術士尼博斯', bossNameEn: 'Nybeth Obdilord', notes: '這是劇情樓層的最後區段，91-95 層每房間 2-3 隻怪、96-99 層增加到 3-4 隻，仍需留意壁陷阱。此處怪物多為不死系且採「接近感知」，除了蠅群、小紅花、駿雕以外，幾乎都能用「基路伯化」魔陶器 1-2 擊解決，但建議保留至少兩個給 Boss 戰使用。', mobNames: [
             { nameEn: 'Dark Dragon', nameZh: '暗龍', tips: '這隻打很痛' }
         ], mobTips: null, bossTips: '戰鬥分為四個階段，Boss 在每次階段轉換時都會召喚不死系小怪，這些小怪若只是打死而未徹底「清除」，過一段時間會原地復活，使用基路伯化魔陶器可給予小怪大量傷害還可以把屍體燒掉；最終階段會固定輪替死亡宣告、虛無、痛苦之言與束縛技能，死亡宣告可用艾斯那淨化解除。' },
-        { range: '101-110', bossFloor: 110, needsTranslation: true, verified: false, bossNameZh: '阿利坎托', bossNameEn: 'Alicanto', notes: '怪物與陷阱配置幾乎是 51-60 層的高數值版本。', mobNames: [
+        { range: '101-110', bossFloor: 110, needsTranslation: false, verified: true, bossNameZh: '阿利坎托', bossNameEn: 'Alicanto', notes: '怪物與陷阱配置幾乎是 51-60 層的高數值版本。', mobNames: [
             { nameEn: 'Deep Palace Hornet', nameZh: '深宮黃蜂' }
         ], mobTips: '同樣要留意黃蜂瀕死時的「終極針」，固定造成自身最大 HP 70% 的傷害並自爆，請盡快擊殺或遠離。', bossTips: '技能循環與 10 層的 Boss 幾乎相同：瞬發近戰、扇形 AoE、定點緩速 AoE、隨機單體 AoE，最後以全體風傷 AoE 收尾，熟悉前段機制即可直接套用應對方式。' },
-        { range: '111-120', bossFloor: 120, needsTranslation: true, verified: false, bossNameZh: '榮光魔花', bossNameEn: 'Kirtimukha', notes: '此區段壁陷阱同樣密集。', mobNames: [
+        { range: '111-120', bossFloor: 120, needsTranslation: false, verified: true, bossNameZh: '榮光魔花', bossNameEn: 'Kirtimukha', notes: '此區段壁陷阱同樣密集。', mobNames: [
             { nameEn: 'Deep Palace Slime', nameZh: '深宮黏液怪', tips: '自爆機制與一般史萊姆相同，開戰一段時間後務必優先解決。' },
             { nameEn: 'Deep Palace Cobra', nameZh: '深宮眼鏡蛇', tips: '若踩到蛙變陷阱，務必遠離眼鏡蛇。' },
             { nameEn: 'Deep Palace Nanka', nameZh: '深宮南加', tips: '即使脫離戰鬥也會持續對隨機玩家放出水滴 AoE，不要大意。' }
