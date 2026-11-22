@@ -217,6 +217,51 @@ h1 {
     color: var(--paper-bg);
 }
 
+/* ---------- 拖曳排序 ---------- */
+
+.entry-row { position: relative; }
+.entry-row.sortable .entry-item { padding-right: 34px; }
+
+.drag-handle {
+    font: inherit;
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: -2px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 8px;
+    color: inherit;
+    opacity: 0.45;
+    cursor: grab;
+    touch-action: none; /* 觸控拖曳時不要捲動頁面 */
+    transition: opacity 0.2s;
+}
+
+.drag-handle:hover,
+.drag-handle:focus-visible { opacity: 1; }
+.drag-handle:focus-visible { outline: 2px solid var(--gold); outline-offset: 0; }
+
+.entry-row .drag-handle {
+    position: absolute;
+    top: 50%;
+    right: 2px;
+    transform: translateY(-50%);
+    color: var(--muted);
+}
+
+.entry-row .entry-item.active + .drag-handle { color: var(--paper-bg); }
+
+.dragging { position: relative; z-index: 20; }
+.entry-row.dragging .entry-item { border-color: var(--gold); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); }
+
+body.is-dragging,
+body.is-dragging * {
+    cursor: grabbing !important;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
 .entry-item-title {
     font-size: 14px;
     font-weight: 700;
@@ -433,17 +478,29 @@ h1 {
     margin-left: auto;
 }
 
-.line-badge {
-    font-size: 12px;
-    padding: 2px 8px;
-    border-radius: 10px;
-    background: rgba(248, 241, 229, 0.12);
-    color: var(--paper-dark);
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
+/* 非編輯狀態：點擊區塊即可複製，不需要選取文字 */
+.macro-block.copyable { cursor: pointer; transition: box-shadow 0.2s; }
+.macro-block.copyable:hover { box-shadow: 0 0 0 1px rgba(184, 134, 11, 0.7), 0 4px 10px rgba(0, 0, 0, 0.2); }
+
+.macro-block.copyable .block-body,
+.macro-block.copyable .block-label {
+    -webkit-user-select: none;
+    user-select: none;
 }
 
-.line-badge.over { background: var(--danger); color: #fff; }
+.macro-block.flash { animation: block-flash 0.6s ease-out; }
+
+@keyframes block-flash {
+    0% { box-shadow: 0 0 0 3px var(--gold), 0 2px 6px rgba(0, 0, 0, 0.15); }
+    100% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0), 0 2px 6px rgba(0, 0, 0, 0.15); }
+}
+
+.block-head .drag-handle {
+    color: var(--paper-dark);
+    margin-left: -6px;
+}
+
+.macro-block.dragging { box-shadow: 0 0 0 2px var(--gold), 0 12px 28px rgba(0, 0, 0, 0.35); }
 
 .block-btn {
     font: inherit;

@@ -22,7 +22,7 @@ window.MacroApp = (function () {
         readOnly: false,       // 檔案版本較新：只顯示、不寫回
         selectedId: null,
         filter: '',
-        editing: null,         // { kind: 'entry'|'macro', entryId, macroId?, isNew, autofocus, read(), isDirty(), draft }
+        editing: null,         // 見下方「編輯狀態」說明
         storageMode: 'browser',
         dirHandle: null,
         needsReconnect: false,
@@ -188,11 +188,13 @@ window.MacroApp = (function () {
                     id: uniqueId(e.id),
                     title: str(e.title).trim() || DEFAULT_TITLE,
                     note: str(e.note),
+                    order: Number.isFinite(e.order) ? e.order : null,
                     createdAt,
                     updatedAt: isoOr(e.updatedAt, createdAt),
                     macros,
                 };
             });
+        normalizeOrders(entries);
         return {
             data: { app: APP_ID, version: readOnly ? version : DATA_VERSION, updatedAt: isoOr(raw.updatedAt, null), entries },
             readOnly,
@@ -548,17 +550,22 @@ window.MacroApp = (function () {
             let added = 0, updated = 0;
             incoming.forEach(e => {
                 if (!index.has(e.id)) {
+                    // 新加入的資料排在清單最上方，維持在檔案中的相對順序
+                    e.order = -incoming.length + e.order;
                     index.set(e.id, state.data.entries.length);
                     state.data.entries.push(e);
                     added++;
                 } else {
                     const i = index.get(e.id);
-                    if (timeOf(e.updatedAt) > timeOf(state.data.entries[i].updatedAt)) {
+                    const cur = state.data.entries[i];
+                    if (timeOf(e.updatedAt) > timeOf(cur.updatedAt)) {
+                        e.order = cur.order; // 保留目前清單中的位置
                         state.data.entries[i] = e;
                         updated++;
                     }
                 }
             });
+            normalizeOrders(state.data.entries);
             message = `合併完成：新增 ${added} 筆、更新 ${updated} 筆`;
         }
         ensureSelection();
@@ -602,8 +609,20 @@ window.MacroApp = (function () {
 
     // ---------- 資料操作 ----------
 
+    // 清單順序：依 order 由小到大；沒有 order 的（舊資料）排在後面，依 updatedAt 由新到舊，最後重新編號 0..n-1
+    function normalizeOrders(entries) {
+        const key = e => (Number.isFinite(e.order) ? e.order : Infinity);
+        [...entries]
+            .sort((a, b) => {
+                const ao = key(a), bo = key(b);
+                if (ao !== bo) return ao - bo;
+                return timeOf(b.updatedAt) - timeOf(a.updatedAt);
+            })
+            .forEach((e, i) => { e.order = i; });
+    }
+
     function sortedEntries() {
-        return [...state.data.entries].sort((a, b) => timeOf(b.updatedAt) - timeOf(a.updatedAt));
+        return [...state.data.entries].sort((a, b) => a.order - b.order);
     }
 
     function matches(entry, q) {
@@ -611,6 +630,8 @@ window.MacroApp = (function () {
         const has = s => s.toLowerCase().includes(q);
         return has(entry.title) || has(entry.note) || entry.macros.some(m => has(m.label) || has(m.content));
     }
+
+    function isFiltering() { return state.filter.trim() !== ''; }
 
     function visibleEntries() {
         const q = state.filter.trim().toLowerCase();
@@ -634,22 +655,62 @@ window.MacroApp = (function () {
         persist();
     }
 
+    // ----- 編輯狀態 -----
+    // state.editing = {
+    //   entryId,
+    //   header: 是否編輯用途／備註,
+    //   macroId: 編輯中的巨集（null 表示沒有）,
+    //   isNew: 剛按「＋ 新增」建立的資料（用途與巨集 1 同時編輯）,
+    //   newMacro: 剛按「＋ 新增巨集」建立的巨集,
+    //   autofocus: 'title' | 'content' | null,
+    //   fields: 目前畫面上的輸入框 { title, note, label, content },
+    //   draft: 重繪前保留的草稿,
+    // }
+
+    function readFields(ed) {
+        const out = {};
+        Object.entries(ed.fields || {}).forEach(([k, node]) => { out[k] = node.value; });
+        return out;
+    }
+
+    function editOriginals(ed) {
+        const entry = findEntry(ed.entryId);
+        const m = entry && ed.macroId ? entry.macros.find(x => x.id === ed.macroId) : null;
+        return {
+            title: entry ? (ed.isNew ? '' : entry.title) : '',
+            note: entry ? entry.note : '',
+            label: m ? m.label : '',
+            content: m ? m.content : '',
+        };
+    }
+
+    function isEditDirty(ed) {
+        if (!ed) return false;
+        const orig = editOriginals(ed);
+        const cur = readFields(ed);
+        return Object.keys(cur).some(k => (k === 'content' ? normalizeNewlines(cur[k]) : cur[k]) !== orig[k]);
+    }
+
     // 目前若有編輯中且有未儲存變更，詢問是否放棄；可以離開時回傳 true
     function requestLeaveEdit() {
         const ed = state.editing;
         if (!ed) return true;
-        if (ed.isDirty && ed.isDirty() && !confirm('有尚未儲存的變更，確定要放棄嗎？')) return false;
+        if (isEditDirty(ed) && !confirm('有尚未儲存的變更，確定要放棄嗎？')) return false;
         discardEdit();
         return true;
     }
 
-    // 放棄編輯；新增後沒輸入任何東西就取消的巨集直接移除（每筆資料至少保留一個）
+    // 放棄編輯：新增後沒儲存就取消 → 整筆移除；新增的巨集沒輸入就取消 → 移除（每筆至少保留一個）
     function discardEdit() {
         const ed = state.editing;
         state.editing = null;
-        if (ed && ed.kind === 'macro' && ed.isNew) {
-            const entry = findEntry(ed.entryId);
-            const idx = entry ? entry.macros.findIndex(m => m.id === ed.macroId) : -1;
+        if (!ed) return;
+        const entry = findEntry(ed.entryId);
+        if (!entry) return;
+        if (ed.isNew) {
+            removeEntry(entry);
+        } else if (ed.newMacro) {
+            const idx = entry.macros.findIndex(m => m.id === ed.macroId);
             if (idx >= 0 && entry.macros.length > 1 && !entry.macros[idx].content && !entry.macros[idx].label) {
                 entry.macros.splice(idx, 1);
                 commit(entry);
@@ -657,12 +718,62 @@ window.MacroApp = (function () {
         }
     }
 
+    function saveEdit() {
+        const ed = state.editing;
+        if (!ed) return;
+        const entry = findEntry(ed.entryId);
+        const v = readFields(ed);
+        state.editing = null;
+        if (!entry) {
+            renderAll();
+            return;
+        }
+        let changed = false;
+        if ('title' in v) {
+            const title = v.title.trim() || DEFAULT_TITLE;
+            const note = v.note.replace(/\s+$/, '');
+            if (title !== entry.title || note !== entry.note) {
+                entry.title = title;
+                entry.note = note;
+                changed = true;
+            }
+        }
+        if ('content' in v) {
+            const m = entry.macros.find(x => x.id === ed.macroId);
+            if (m) {
+                const label = v.label.trim();
+                const content = normalizeNewlines(v.content);
+                if (label !== m.label || content !== m.content) {
+                    m.label = label;
+                    m.content = content;
+                    changed = true;
+                }
+            }
+        }
+        if (changed) commit(entry);
+        renderAll();
+    }
+
+    function cancelEdit() {
+        discardEdit();
+        renderAll();
+    }
+
+    function startEdit(ed) {
+        if (state.readOnly || !requestLeaveEdit()) return;
+        state.editing = ed;
+        renderAll();
+    }
+
+    // ----- 資料 -----
+
     function selectEntry(id) {
         if (id === state.selectedId) {
             setMenuOpen(false);
             return;
         }
         if (!requestLeaveEdit()) return;
+        if (!findEntry(id)) { renderAll(); return; } // 被放棄的新資料
         state.selectedId = id;
         state.menuOpen = false;
         saveLastSelected();
@@ -672,57 +783,56 @@ window.MacroApp = (function () {
     function addEntry() {
         if (state.readOnly || !requestLeaveEdit()) return;
         const now = nowIso();
-        const entry = { id: newId(), title: DEFAULT_TITLE, note: '', createdAt: now, updatedAt: now, macros: [newMacro()] };
+        const entry = { id: newId(), title: DEFAULT_TITLE, note: '', order: -1, createdAt: now, updatedAt: now, macros: [newMacro()] };
         state.data.entries.push(entry);
+        normalizeOrders(state.data.entries);
         state.selectedId = entry.id;
         state.filter = '';
         $('search').value = '';
         state.menuOpen = false;
         saveLastSelected();
         commit(entry);
-        state.editing = { kind: 'entry', entryId: entry.id, isNew: true, autofocus: true };
+        state.editing = { entryId: entry.id, header: true, macroId: entry.macros[0].id, isNew: true, autofocus: 'title' };
         renderAll();
     }
 
-    function startEditEntry(entry) {
-        if (!requestLeaveEdit()) return;
-        state.editing = { kind: 'entry', entryId: entry.id, autofocus: true };
-        renderDetail();
-    }
-
-    function saveEntryEdit(entry, title, note) {
-        title = title.trim() || DEFAULT_TITLE;
-        note = note.replace(/\s+$/, '');
-        state.editing = null;
-        if (title !== entry.title || note !== entry.note) {
-            entry.title = title;
-            entry.note = note;
-            commit(entry);
-        }
-        renderAll();
-    }
-
-    function cancelEdit() {
-        discardEdit();
-        renderAll();
-    }
-
-    function deleteEntry(entry) {
-        if (!requestLeaveEdit()) {
-            return;
-        }
-        if (!confirm(`確定刪除「${entry.title}」？此動作無法復原。`)) {
-            renderDetail();
-            return;
-        }
+    // 移除一筆資料並選取清單中相鄰的下一筆
+    function removeEntry(entry) {
         const list = visibleEntries();
         const idx = list.findIndex(e => e.id === entry.id);
         const neighbor = idx >= 0 ? (list[idx + 1] || list[idx - 1]) : null;
         state.data.entries = state.data.entries.filter(e => e.id !== entry.id);
-        state.selectedId = neighbor ? neighbor.id : null;
+        normalizeOrders(state.data.entries);
+        if (state.selectedId === entry.id) state.selectedId = neighbor ? neighbor.id : null;
         ensureSelection();
         commit(null);
+    }
+
+    function deleteEntry(entry) {
+        if (!requestLeaveEdit()) return;
+        if (findEntry(entry.id) && confirm(`確定刪除「${entry.title}」？此動作無法復原。`)) removeEntry(entry);
         renderAll();
+    }
+
+    function moveEntry(id, delta) {
+        const list = sortedEntries();
+        const from = list.findIndex(e => e.id === id);
+        const to = from + delta;
+        if (from < 0 || to < 0 || to >= list.length) return;
+        const [e] = list.splice(from, 1);
+        list.splice(to, 0, e);
+        reorderEntries(list.map(x => x.id));
+        focusHandle(id);
+    }
+
+    function reorderEntries(ids) {
+        ids.forEach((id, i) => {
+            const e = findEntry(id);
+            if (e) e.order = i;
+        });
+        normalizeOrders(state.data.entries);
+        commit(null);
+        renderSidebar();
     }
 
     function addMacro(entry) {
@@ -730,48 +840,153 @@ window.MacroApp = (function () {
         const m = newMacro();
         entry.macros.push(m);
         commit(entry);
-        state.editing = { kind: 'macro', entryId: entry.id, macroId: m.id, isNew: true, autofocus: true };
-        renderAll();
-    }
-
-    function startEditMacro(entry, m) {
-        if (!requestLeaveEdit()) return;
-        state.editing = { kind: 'macro', entryId: entry.id, macroId: m.id, autofocus: true };
-        renderDetail();
-    }
-
-    function saveMacroEdit(entry, m, label, content) {
-        label = label.trim();
-        content = normalizeNewlines(content);
-        state.editing = null;
-        if (label !== m.label || content !== m.content) {
-            m.label = label;
-            m.content = content;
-            commit(entry);
-        }
+        state.editing = { entryId: entry.id, header: false, macroId: m.id, newMacro: true, autofocus: 'content' };
         renderAll();
     }
 
     function deleteMacro(entry, m, index) {
         if (!requestLeaveEdit()) return;
-        if (!confirm(`確定刪除「${macroLabel(m, index)}」？此動作無法復原。`)) {
-            renderDetail();
-            return;
+        if (confirm(`確定刪除「${macroLabel(m, index)}」？此動作無法復原。`)) {
+            entry.macros = entry.macros.filter(x => x.id !== m.id);
+            if (!entry.macros.length) entry.macros.push(newMacro());
+            commit(entry);
         }
-        entry.macros = entry.macros.filter(x => x.id !== m.id);
-        if (!entry.macros.length) entry.macros.push(newMacro());
+        renderAll();
+    }
+
+    function moveMacro(entry, id, delta) {
+        const from = entry.macros.findIndex(m => m.id === id);
+        const to = from + delta;
+        if (from < 0 || to < 0 || to >= entry.macros.length) return;
+        const ids = entry.macros.map(m => m.id);
+        ids.splice(to, 0, ids.splice(from, 1)[0]);
+        reorderMacros(entry, ids);
+        focusHandle(id);
+    }
+
+    function reorderMacros(entry, ids) {
+        const byId = new Map(entry.macros.map(m => [m.id, m]));
+        const next = ids.map(id => byId.get(id)).filter(Boolean);
+        if (next.length !== entry.macros.length) return renderAll();
+        entry.macros = next;
         commit(entry);
         renderAll();
     }
 
-    function moveMacro(entry, index, delta) {
-        const to = index + delta;
-        if (to < 0 || to >= entry.macros.length) return;
-        if (!requestLeaveEdit()) return;
-        const [m] = entry.macros.splice(index, 1);
-        entry.macros.splice(to, 0, m);
-        commit(entry);
-        renderAll();
+    function focusHandle(id) {
+        const node = document.querySelector(`.drag-handle[data-handle="${CSS.escape(id)}"]`);
+        if (node) node.focus();
+    }
+
+    // ---------- 拖曳排序（Pointer Events，滑鼠與觸控共用）----------
+    // 拖曳中的項目以 transform 跟著指標移動；超過相鄰項目的一半時在 DOM 中換位，放開後依 DOM 順序回報
+    let lastDragEnd = 0; // 拖曳放開時可能觸發一次 click，用來避免被當成「點擊複製」
+
+    function startDrag(e, itemEl, opts) {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        e.preventDefault();
+        // 不用 setPointerCapture：拖曳中項目會在 DOM 中搬動，capture 會因此失效，改在 window 上監聽
+        const pointerId = e.pointerId;
+
+        const { container, itemSelector, scroller, onDrop } = opts;
+        const items = () => [...container.querySelectorAll(itemSelector)];
+        const idsOf = () => items().map(n => n.dataset.id);
+        const startIds = idsOf().join('\n');
+        const rect = itemEl.getBoundingClientRect();
+        const height = rect.height;
+        const grabOffset = e.clientY - rect.top;
+        let pointerY = e.clientY;
+        let offset = 0;
+        let raf = 0;
+        let done = false;
+
+        itemEl.classList.add('dragging');
+        document.body.classList.add('is-dragging');
+
+        function place() {
+            const top = pointerY - grabOffset;
+            const bottom = top + height;
+            const list = items();
+            const idx = list.indexOf(itemEl);
+            let moved = false;
+            for (let i = 0; i < idx; i++) {
+                const r = list[i].getBoundingClientRect();
+                if (top < r.top + r.height / 2) { list[i].before(itemEl); moved = true; break; }
+            }
+            if (!moved) {
+                for (let i = list.length - 1; i > idx; i--) {
+                    const r = list[i].getBoundingClientRect();
+                    if (bottom > r.top + r.height / 2) { list[i].after(itemEl); break; }
+                }
+            }
+            const naturalTop = itemEl.getBoundingClientRect().top - offset;
+            offset = top - naturalTop;
+            itemEl.style.transform = `translateY(${offset}px)`;
+        }
+
+        // 指標靠近邊緣時自動捲動（清單本身或整個頁面）
+        function tick() {
+            const b = scroller ? scroller.getBoundingClientRect() : { top: 0, bottom: window.innerHeight };
+            const edge = 40;
+            let dy = 0;
+            if (pointerY < b.top + edge) dy = -Math.min(14, (b.top + edge - pointerY) / 2);
+            else if (pointerY > b.bottom - edge) dy = Math.min(14, (pointerY - (b.bottom - edge)) / 2);
+            if (dy) {
+                if (scroller) scroller.scrollTop += dy;
+                else window.scrollBy(0, dy);
+                place();
+            }
+            raf = requestAnimationFrame(tick);
+        }
+
+        function onMove(ev) {
+            if (ev.pointerId !== pointerId) return;
+            pointerY = ev.clientY;
+            place();
+        }
+
+        function finish(ev) {
+            if (done || ev.pointerId !== pointerId) return;
+            done = true;
+            cancelAnimationFrame(raf);
+            // 快速甩動時最後一個 pointermove 可能沒進來，放開的位置也要算進去
+            if (ev.type === 'pointerup') {
+                pointerY = ev.clientY;
+                place();
+            }
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', finish);
+            window.removeEventListener('pointercancel', finish);
+            lastDragEnd = performance.now();
+            itemEl.classList.remove('dragging');
+            itemEl.style.transform = '';
+            document.body.classList.remove('is-dragging');
+            const ids = idsOf();
+            if (ev.type === 'pointercancel') renderAll(); // 還原
+            else if (ids.join('\n') !== startIds) onDrop(ids);
+        }
+
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', finish);
+        window.addEventListener('pointercancel', finish);
+        raf = requestAnimationFrame(tick);
+    }
+
+    function dragHandle(id, label, onPointerDown, onMove) {
+        return h('button', {
+            type: 'button',
+            class: 'drag-handle',
+            'data-handle': id,
+            title: '拖曳排序',
+            'aria-label': `${label}：拖曳排序，或用方向鍵 ↑↓ 移動`,
+            onpointerdown: onPointerDown,
+            onkeydown: ev => {
+                if (ev.key === 'ArrowUp' || ev.key === 'ArrowDown') {
+                    ev.preventDefault();
+                    onMove(ev.key === 'ArrowUp' ? -1 : 1);
+                }
+            },
+        }, '⋮⋮');
     }
 
     // ---------- 渲染 ----------
@@ -796,9 +1011,11 @@ window.MacroApp = (function () {
         } else if (!items.length) {
             list.append(h('li', { class: 'list-empty' }, '找不到符合的資料'));
         }
+        // 搜尋中只顯示部分資料，排序會有歧義，所以不提供拖曳
+        const canSort = !state.readOnly && !isFiltering() && items.length > 1;
         items.forEach(e => {
             const active = e.id === state.selectedId;
-            list.append(h('li', null,
+            list.append(h('li', { class: 'entry-row' + (canSort ? ' sortable' : ''), 'data-id': e.id },
                 h('button', {
                     type: 'button',
                     class: 'entry-item' + (active ? ' active' : ''),
@@ -807,7 +1024,15 @@ window.MacroApp = (function () {
                     onclick: () => selectEntry(e.id),
                 },
                 h('span', { class: 'entry-item-title' }, e.title),
-                h('span', { class: 'entry-item-meta' }, `${e.macros.length} 個巨集`))));
+                h('span', { class: 'entry-item-meta' }, `${e.macros.length} 個巨集`)),
+                canSort ? dragHandle(e.id, e.title,
+                    ev => startDrag(ev, ev.currentTarget.closest('.entry-row'), {
+                        container: list,
+                        itemSelector: ':scope > .entry-row',
+                        scroller: list,
+                        onDrop: reorderEntries,
+                    }),
+                    delta => moveEntry(e.id, delta)) : null));
         });
 
         const selected = findEntry(state.selectedId);
@@ -821,8 +1046,12 @@ window.MacroApp = (function () {
 
     function renderDetail() {
         const root = $('detail');
-        // 若重繪時正在編輯，先保留草稿
-        if (state.editing && state.editing.read) state.editing.draft = state.editing.read();
+        const ed = state.editing;
+        // 若重繪時正在編輯，先保留草稿，輸入框會在下面重新建立
+        if (ed) {
+            if (ed.fields && Object.keys(ed.fields).length) ed.draft = readFields(ed);
+            ed.fields = {};
+        }
         root.replaceChildren();
 
         if (state.readOnly) {
@@ -842,63 +1071,74 @@ window.MacroApp = (function () {
         root.append(renderEntryHeader(entry));
         const section = h('section', { class: 'macro-section' },
             h('h3', { class: 'section-title' }, `巨集（${entry.macros.length}）`));
-        entry.macros.forEach((m, i) => section.append(renderBlock(entry, m, i)));
+        entry.macros.forEach((m, i) => section.append(renderBlock(entry, m, i, section)));
         if (!state.readOnly) {
             section.append(h('button', { type: 'button', class: 'btn btn-secondary add-macro', onclick: () => addMacro(entry) }, '＋ 新增巨集'));
         }
         root.append(section);
 
         root.querySelectorAll('textarea.autogrow').forEach(autoGrow);
-        const ed = state.editing;
-        if (ed && ed.autofocus) {
-            ed.autofocus = false;
-            const target = root.querySelector('[data-autofocus]');
+        if (ed && ed.autofocus && ed.fields) {
+            const target = ed.fields[ed.autofocus];
+            ed.autofocus = null;
             if (target) {
                 target.focus();
-                if (ed.kind === 'entry') target.select();
+                if (target.tagName === 'INPUT') target.select();
                 else target.setSelectionRange(target.value.length, target.value.length);
             }
         }
     }
 
-    function bindEditKeys(node, save, enterSaves) {
+    // Ctrl/⌘+Enter 儲存、Esc 取消；onEnter：單按 Enter 時要做的事（null 表示照常換行）
+    function bindEditKeys(node, onEnter) {
         node.addEventListener('keydown', e => {
             if (isComposing(e)) return;
             if (e.key === 'Escape') {
                 e.preventDefault();
                 cancelEdit();
-            } else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey || (enterSaves && !e.shiftKey))) {
+            } else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
                 e.preventDefault();
-                save();
+                saveEdit();
+            } else if (e.key === 'Enter' && !e.shiftKey && onEnter) {
+                e.preventDefault();
+                onEnter();
             }
         });
     }
 
+    function editButtons(hint) {
+        return [
+            h('button', { type: 'button', class: 'btn btn-primary btn-sm', onclick: saveEdit }, '儲存'),
+            h('button', { type: 'button', class: 'btn btn-secondary btn-sm', onclick: cancelEdit }, '取消'),
+            h('span', { class: 'edit-hint' }, hint),
+        ];
+    }
+
     function renderEntryHeader(entry) {
         const ed = state.editing;
-        if (ed && ed.kind === 'entry' && ed.entryId === entry.id) {
-            const draft = ed.draft || { title: entry.title, note: entry.note };
+        if (ed && ed.header && ed.entryId === entry.id) {
+            const orig = editOriginals(ed);
+            const draft = ed.draft || {};
+            const withMacro = !!ed.macroId; // 新增資料：用途與巨集 1 同時編輯，儲存鈕在巨集區塊下方
             const titleInput = h('input', {
-                type: 'text', class: 'input title-input', value: draft.title,
-                placeholder: '用途', 'aria-label': '用途', 'data-autofocus': '',
+                type: 'text', class: 'input title-input', value: draft.title ?? orig.title,
+                placeholder: `用途（例如：絕亞 P1 站位）`, 'aria-label': '用途',
             });
             const noteInput = h('textarea', {
-                class: 'input note-input autogrow', value: draft.note, rows: 2,
+                class: 'input note-input autogrow', value: draft.note ?? orig.note, rows: 2,
                 placeholder: '備註（可空白）', 'aria-label': '備註',
             });
             noteInput.addEventListener('input', () => autoGrow(noteInput));
-            const save = () => saveEntryEdit(entry, titleInput.value, noteInput.value);
-            bindEditKeys(titleInput, save, true);
-            bindEditKeys(noteInput, save, false);
-            ed.read = () => ({ title: titleInput.value, note: noteInput.value });
-            ed.isDirty = () => titleInput.value !== entry.title || noteInput.value !== entry.note;
+            bindEditKeys(titleInput, withMacro ? () => ed.fields.content && ed.fields.content.focus() : saveEdit);
+            bindEditKeys(noteInput, null);
+            ed.fields.title = titleInput;
+            ed.fields.note = noteInput;
             return h('div', { class: 'entry-header editing' },
                 titleInput,
                 noteInput,
-                h('div', { class: 'edit-actions' },
-                    h('button', { type: 'button', class: 'btn btn-primary btn-sm', onclick: save }, '儲存'),
-                    h('button', { type: 'button', class: 'btn btn-secondary btn-sm', onclick: cancelEdit }, '取消'),
-                    h('span', { class: 'edit-hint' }, 'Enter 儲存・Esc 取消')));
+                withMacro
+                    ? h('div', { class: 'edit-hint' }, 'Enter 跳到巨集內容・Ctrl/⌘+Enter 儲存・Esc 取消')
+                    : h('div', { class: 'edit-actions' }, editButtons('Enter 儲存・Esc 取消')));
         }
 
         return h('div', { class: 'entry-header' },
@@ -906,59 +1146,49 @@ window.MacroApp = (function () {
                 h('h2', { class: 'entry-title' }, entry.title),
                 entry.note.trim() ? h('p', { class: 'entry-note' }, entry.note) : null),
             state.readOnly ? null : h('div', { class: 'entry-actions' },
-                h('button', { type: 'button', class: 'btn btn-secondary btn-sm', onclick: () => startEditEntry(entry) }, '✎ 編輯'),
+                h('button', { type: 'button', class: 'btn btn-secondary btn-sm', onclick: () => startEdit({ entryId: entry.id, header: true, macroId: null, autofocus: 'title' }) }, '✎ 編輯'),
                 h('button', { type: 'button', class: 'btn btn-danger btn-sm', onclick: () => deleteEntry(entry) }, '🗑 刪除')));
     }
 
-    function renderBlock(entry, m, index) {
+    function renderBlock(entry, m, index, section) {
         const ed = state.editing;
-        const editing = !!(ed && ed.kind === 'macro' && ed.entryId === entry.id && ed.macroId === m.id);
+        const editing = !!(ed && ed.entryId === entry.id && ed.macroId === m.id);
         const label = macroLabel(m, index);
         const ro = state.readOnly;
 
-        const badge = h('span', { class: 'line-badge' });
         const warn = h('div', { class: 'block-warn', hidden: true }, `⚠ 超過遊戲單一巨集 ${MAX_LINES} 行上限`);
-        const updateCount = text => {
-            const n = lineCount(text);
-            const over = n > MAX_LINES;
-            badge.textContent = `${n} / ${MAX_LINES} 行`;
-            badge.classList.toggle('over', over);
-            warn.hidden = !over;
-        };
+        // 只在編輯時提示超過 15 行，平常檢視不顯示
+        const updateWarn = text => { warn.hidden = lineCount(text) <= MAX_LINES; };
 
         let body, labelNode, textarea = null, actions = null;
         if (editing) {
-            const draft = ed.draft || { label: m.label, content: m.content };
+            const orig = editOriginals(ed);
+            const draft = ed.draft || {};
             labelNode = h('input', {
-                type: 'text', class: 'label-input', value: draft.label,
+                type: 'text', class: 'label-input', value: draft.label ?? orig.label,
                 placeholder: `巨集 ${index + 1}`, 'aria-label': '巨集名稱',
             });
             textarea = h('textarea', {
-                class: 'block-textarea autogrow', value: draft.content,
-                placeholder: '/p 在這裡輸入巨集內容…', 'aria-label': `${label} 內容`, 'data-autofocus': '',
+                class: 'block-textarea autogrow', value: draft.content ?? orig.content,
+                placeholder: '/p 在這裡輸入巨集內容…', 'aria-label': `${label} 內容`,
             });
             textarea.spellcheck = false;
             textarea.addEventListener('input', () => {
                 autoGrow(textarea);
-                updateCount(textarea.value);
+                updateWarn(textarea.value);
             });
-            const save = () => saveMacroEdit(entry, m, labelNode.value, textarea.value);
-            bindEditKeys(labelNode, save, true);
-            bindEditKeys(textarea, save, false);
-            ed.read = () => ({ label: labelNode.value, content: textarea.value });
-            ed.isDirty = () => labelNode.value !== m.label || normalizeNewlines(textarea.value) !== m.content;
+            bindEditKeys(labelNode, () => textarea.focus());
+            bindEditKeys(textarea, null);
+            ed.fields.label = labelNode;
+            ed.fields.content = textarea;
             body = textarea;
-            actions = h('div', { class: 'block-edit-actions' },
-                h('button', { type: 'button', class: 'btn btn-primary btn-sm', onclick: save }, '儲存'),
-                h('button', { type: 'button', class: 'btn btn-secondary btn-sm', onclick: cancelEdit }, '取消'),
-                h('span', { class: 'edit-hint' }, 'Ctrl/⌘+Enter 儲存・Esc 取消'));
-            updateCount(draft.content);
+            actions = h('div', { class: 'block-edit-actions' }, editButtons('Ctrl/⌘+Enter 儲存・Esc 取消'));
+            updateWarn(textarea.value);
         } else {
             labelNode = h('span', { class: 'block-label', title: label }, label);
             body = m.content
                 ? h('div', { class: 'block-body' }, m.content)
                 : h('div', { class: 'block-body empty' }, ro ? '（空白巨集）' : '（空白巨集，按 ✎ 編輯）');
-            updateCount(m.content);
         }
 
         const copyBtn = h('button', {
@@ -966,24 +1196,42 @@ window.MacroApp = (function () {
             onclick: () => copyWithFeedback(copyBtn, textarea ? textarea.value : m.content),
         }, '複製');
 
-        const showTools = !ro && !editing;
-        const tools = h('div', { class: 'block-tools' },
-            showTools ? [
-                h('button', { type: 'button', class: 'block-btn icon', title: '上移', 'aria-label': '上移', disabled: index === 0, onclick: () => moveMacro(entry, index, -1) }, '↑'),
-                h('button', { type: 'button', class: 'block-btn icon', title: '下移', 'aria-label': '下移', disabled: index === entry.macros.length - 1, onclick: () => moveMacro(entry, index, 1) }, '↓'),
-            ] : null,
-            badge,
-            copyBtn,
-            showTools ? [
-                h('button', { type: 'button', class: 'block-btn icon', title: '編輯', 'aria-label': '編輯', onclick: () => startEditMacro(entry, m) }, '✎'),
-                h('button', { type: 'button', class: 'block-btn icon danger', title: '刪除', 'aria-label': '刪除', onclick: () => deleteMacro(entry, m, index) }, '🗑'),
-            ] : null);
-
-        return h('div', { class: 'macro-block' + (editing ? ' editing' : '') },
-            h('div', { class: 'block-head' }, labelNode, tools),
+        const canSort = !ro && !editing && entry.macros.length > 1;
+        const block = h('div', { class: 'macro-block' + (editing ? ' editing' : ''), 'data-id': m.id },
+            h('div', { class: 'block-head' },
+                canSort ? dragHandle(m.id, label,
+                    ev => startDrag(ev, block, {
+                        container: section,
+                        itemSelector: ':scope > .macro-block',
+                        scroller: null,
+                        onDrop: ids => reorderMacros(entry, ids),
+                    }),
+                    delta => moveMacro(entry, m.id, delta)) : null,
+                labelNode,
+                h('div', { class: 'block-tools' },
+                    copyBtn,
+                    !ro && !editing ? [
+                        h('button', { type: 'button', class: 'block-btn icon', title: '編輯', 'aria-label': '編輯', onclick: () => startEdit({ entryId: entry.id, header: false, macroId: m.id, autofocus: 'content' }) }, '✎'),
+                        h('button', { type: 'button', class: 'block-btn icon danger', title: '刪除', 'aria-label': '刪除', onclick: () => deleteMacro(entry, m, index) }, '🗑'),
+                    ] : null)),
             warn,
             body,
             actions);
+
+        // 非編輯狀態：點區塊任何地方（按鈕以外）就複製
+        if (!editing && m.content) {
+            block.classList.add('copyable');
+            block.title = '點擊複製';
+            block.addEventListener('click', ev => {
+                if (ev.target.closest('button, input, textarea, a')) return;
+                if (performance.now() - lastDragEnd < 400) return;
+                copyWithFeedback(copyBtn, m.content);
+                block.classList.remove('flash');
+                void block.offsetWidth; // 重新觸發動畫
+                block.classList.add('flash');
+            });
+        }
+        return block;
     }
 
     function renderStatus() {
@@ -1058,7 +1306,7 @@ window.MacroApp = (function () {
         $('menu-toggle').addEventListener('click', () => setMenuOpen(!state.menuOpen));
 
         window.addEventListener('beforeunload', e => {
-            const unsavedEdit = state.editing && state.editing.isDirty && state.editing.isDirty();
+            const unsavedEdit = isEditDirty(state.editing);
             if (hasPendingWrite() || unsavedEdit) {
                 e.preventDefault();
                 e.returnValue = '';
