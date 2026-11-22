@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>巨集管理工具</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/macro.css">
+    <script src="js/ga.js"></script>
+</head>
+<body>
+
+<div class="container wide">
+    <a href="index.html" class="back-link">← 返回導航頁</a>
+    <h1>巨集管理工具</h1>
+    <div class="subtitle">Macro Manager</div>
+
+    <div class="macro-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="mobile-bar">
+                <button type="button" class="btn btn-secondary btn-sm" id="menu-toggle" aria-expanded="false" aria-controls="side-panel">清單 ▾</button>
+                <span class="mobile-current" id="mobile-current"></span>
+            </div>
+            <div class="side-panel" id="side-panel">
+                <input type="search" class="input search-input" id="search" placeholder="🔍 搜尋…" aria-label="搜尋巨集" autocomplete="off">
+                <button type="button" class="btn btn-primary btn-block" id="add-entry">＋ 新增</button>
+                <ul class="entry-list" id="entry-list"></ul>
+            </div>
+            <div class="storage-panel" id="storage-panel"></div>
+        </aside>
+
+        <main class="detail" id="detail"></main>
+    </div>
+</div>
+
+<script src="js/macro.js?v=1"></script>
+</body>
+</html>
