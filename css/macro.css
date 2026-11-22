@@ -516,7 +516,32 @@ body.is-dragging * {
     transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
-.block-btn.icon { padding: 3px 6px; }
+.block-btn.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 6px;
+}
+
+/* 線條圖示 */
+.svg-icon {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+}
+
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-icon .svg-icon { width: 14px; height: 14px; }
 .block-btn:hover:not(:disabled) { border-color: var(--gold); background: rgba(255, 255, 255, 0.06); }
 .block-btn:disabled { opacity: 0.3; cursor: default; }
 .block-btn.copied { color: var(--gold); border-color: var(--gold); }
@@ -573,8 +598,8 @@ body.is-dragging * {
     background: var(--block-head);
 }
 
-.block-edit-actions .btn-primary { background: var(--gold); color: #1f140f; }
-.block-edit-actions .btn-primary:hover { background: #d19c1d; }
+.block-edit-actions .btn-primary { background: #e2b85a; color: #2d1f1a; font-weight: 700; }
+.block-edit-actions .btn-primary:hover { background: #ecc97a; }
 .block-edit-actions .btn-secondary { color: var(--block-text); border-color: rgba(248, 241, 229, 0.3); }
 .block-edit-actions .edit-hint { color: rgba(248, 241, 229, 0.55); }
 

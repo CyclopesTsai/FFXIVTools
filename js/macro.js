@@ -120,6 +120,26 @@ window.MacroApp = (function () {
         ta.style.height = ta.scrollHeight + 'px';
     }
 
+    // 線條圖示（stroke 跟著文字顏色），取代 ✎ / 🗑 emoji，各瀏覽器顯示一致
+    const ICONS = {
+        edit: ['M4 20h4L18.5 9.5a2.12 2.12 0 0 0-3-3L5 17v3z', 'M13.5 8.5l3 3'],
+        trash: ['M4 7h16', 'M9 7V4.5h6V7', 'M6.5 7l.9 12.1a2 2 0 0 0 2 1.9h5.2a2 2 0 0 0 2-1.9L17.5 7', 'M10 11v6', 'M14 11v6'],
+    };
+
+    function icon(name) {
+        const ns = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(ns, 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('class', 'svg-icon');
+        svg.setAttribute('aria-hidden', 'true');
+        ICONS[name].forEach(d => {
+            const path = document.createElementNS(ns, 'path');
+            path.setAttribute('d', d);
+            svg.append(path);
+        });
+        return svg;
+    }
+
     function toast(message) {
         const node = h('div', { class: 'toast', role: 'status' }, message);
         document.body.append(node);
@@ -1146,8 +1166,8 @@ window.MacroApp = (function () {
                 h('h2', { class: 'entry-title' }, entry.title),
                 entry.note.trim() ? h('p', { class: 'entry-note' }, entry.note) : null),
             state.readOnly ? null : h('div', { class: 'entry-actions' },
-                h('button', { type: 'button', class: 'btn btn-secondary btn-sm', onclick: () => startEdit({ entryId: entry.id, header: true, macroId: null, autofocus: 'title' }) }, '✎ 編輯'),
-                h('button', { type: 'button', class: 'btn btn-danger btn-sm', onclick: () => deleteEntry(entry) }, '🗑 刪除')));
+                h('button', { type: 'button', class: 'btn btn-secondary btn-sm btn-icon', onclick: () => startEdit({ entryId: entry.id, header: true, macroId: null, autofocus: 'title' }) }, icon('edit'), '編輯'),
+                h('button', { type: 'button', class: 'btn btn-danger btn-sm btn-icon', onclick: () => deleteEntry(entry) }, icon('trash'), '刪除')));
     }
 
     function renderBlock(entry, m, index, section) {
@@ -1188,7 +1208,7 @@ window.MacroApp = (function () {
             labelNode = h('span', { class: 'block-label', title: label }, label);
             body = m.content
                 ? h('div', { class: 'block-body' }, m.content)
-                : h('div', { class: 'block-body empty' }, ro ? '（空白巨集）' : '（空白巨集，按 ✎ 編輯）');
+                : h('div', { class: 'block-body empty' }, ro ? '（空白巨集）' : '（空白巨集，按編輯開始輸入）');
         }
 
         const copyBtn = h('button', {
@@ -1211,8 +1231,8 @@ window.MacroApp = (function () {
                 h('div', { class: 'block-tools' },
                     copyBtn,
                     !ro && !editing ? [
-                        h('button', { type: 'button', class: 'block-btn icon', title: '編輯', 'aria-label': '編輯', onclick: () => startEdit({ entryId: entry.id, header: false, macroId: m.id, autofocus: 'content' }) }, '✎'),
-                        h('button', { type: 'button', class: 'block-btn icon danger', title: '刪除', 'aria-label': '刪除', onclick: () => deleteMacro(entry, m, index) }, '🗑'),
+                        h('button', { type: 'button', class: 'block-btn icon', title: '編輯', 'aria-label': '編輯', onclick: () => startEdit({ entryId: entry.id, header: false, macroId: m.id, autofocus: 'content' }) }, icon('edit')),
+                        h('button', { type: 'button', class: 'block-btn icon danger', title: '刪除', 'aria-label': '刪除', onclick: () => deleteMacro(entry, m, index) }, icon('trash')),
                     ] : null)),
             warn,
             body,
