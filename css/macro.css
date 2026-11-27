@@ -644,6 +644,48 @@ body.is-dragging * {
     gap: 8px;
 }
 
+.dialog-title {
+    margin: 0 0 10px;
+    font-size: 16px;
+    color: var(--heading);
+}
+
+.dialog-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: -4px 0 16px;
+    font-size: 13px;
+    color: var(--brown);
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.dialog-check input { width: 16px; height: 16px; margin: 0; accent-color: var(--brown); cursor: pointer; }
+
+.btn-danger-solid { background: var(--danger); color: #fff; }
+.btn-danger-solid:hover:not(:disabled) { background: #c53030; }
+
+.side-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.side-footer:empty { display: none; }
+.side-footer .btn-icon { justify-content: center; }
+
+.link-btn {
+    font: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--gold);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .toast {
     position: fixed;
     left: 50%;

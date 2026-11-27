@@ -9,6 +9,7 @@ window.MacroApp = (function () {
     const FILE_NAME = 'ff14-macros.json';
     const LS_DATA = 'ffxiv-macro:data';
     const LS_LAST = 'ffxiv-macro:lastSelected';
+    const LS_SKIP_MACRO_CONFIRM = 'ffxiv-macro:skipDeleteMacroConfirm';
     const IDB_NAME = 'ffxiv-macro';
     const IDB_STORE = 'handles';
     const IDB_KEY = 'dir';
@@ -151,23 +152,29 @@ window.MacroApp = (function () {
     }
 
     // 自訂選擇對話框（三選一等），回傳選到的 key；Esc／點背景為 null
-    function choose(message, options) {
+    // opts.title：標題；opts.checkboxLabel：附一個勾選框，關閉時把勾選狀態寫回 opts.checked；
+    // opts.focus：預設聚焦第幾個按鈕（危險操作可聚焦在「取消」）
+    function choose(message, options, opts = {}) {
         return new Promise(resolve => {
             const prevFocus = document.activeElement;
             const buttons = options.map(o => h('button', {
                 type: 'button',
-                class: `btn ${o.kind === 'primary' ? 'btn-primary' : o.kind === 'danger' ? 'btn-danger' : 'btn-secondary'}`,
+                class: `btn ${o.kind === 'primary' ? 'btn-primary' : o.kind === 'danger' ? 'btn-danger-solid' : 'btn-secondary'}`,
                 onclick: () => close(o.key),
             }, o.label));
+            const checkbox = opts.checkboxLabel ? h('input', { type: 'checkbox' }) : null;
             const overlay = h('div', { class: 'dialog-overlay', onclick: e => { if (e.target === overlay) close(null); } },
                 h('div', { class: 'dialog', role: 'dialog', 'aria-modal': 'true' },
+                    opts.title ? h('h3', { class: 'dialog-title' }, opts.title) : null,
                     h('p', { class: 'dialog-message' }, message),
+                    checkbox ? h('label', { class: 'dialog-check' }, checkbox, opts.checkboxLabel) : null,
                     h('div', { class: 'dialog-actions' }, buttons)));
 
             function onKey(e) {
                 if (e.key === 'Escape') { e.preventDefault(); close(null); }
             }
             function close(v) {
+                if (checkbox) opts.checked = checkbox.checked;
                 document.removeEventListener('keydown', onKey, true);
                 overlay.remove();
                 if (prevFocus && prevFocus.focus) prevFocus.focus();
@@ -175,7 +182,7 @@ window.MacroApp = (function () {
             }
             document.addEventListener('keydown', onKey, true);
             document.body.append(overlay);
-            buttons[0].focus();
+            (buttons[opts.focus || 0] || buttons[0]).focus();
         });
     }
 
@@ -828,10 +835,41 @@ window.MacroApp = (function () {
         commit(null);
     }
 
-    function deleteEntry(entry) {
+    async function deleteEntry(entry) {
         if (!requestLeaveEdit()) return;
-        if (findEntry(entry.id) && confirm(`確定刪除「${entry.title}」？此動作無法復原。`)) removeEntry(entry);
         renderAll();
+        if (!findEntry(entry.id)) return;
+        const key = await choose(`確定刪除「${entry.title}」？此動作無法復原。`, [
+            { key: 'delete', label: '刪除', kind: 'danger' },
+            { key: null, label: '取消' },
+        ], { title: '刪除資料' });
+        if (key !== 'delete' || !findEntry(entry.id)) return;
+        removeEntry(entry);
+        renderAll();
+    }
+
+    // 全部刪除：一定要確認，預設聚焦在「取消」
+    async function deleteAllEntries() {
+        const entries = state.data.entries;
+        if (state.readOnly || !entries.length) return;
+        const macroCount = entries.reduce((n, e) => n + e.macros.length, 0);
+        const key = await choose(
+            `確定刪除全部 ${entries.length} 筆資料（共 ${macroCount} 個巨集）？\n此動作無法復原，建議先「匯出」備份。`,
+            [
+                { key: 'delete', label: '全部刪除', kind: 'danger' },
+                { key: null, label: '取消' },
+            ],
+            { title: '全部刪除', focus: 1 });
+        if (key !== 'delete') return;
+        state.editing = null;
+        state.data.entries = [];
+        state.selectedId = null;
+        state.filter = '';
+        $('search').value = '';
+        saveLastSelected();
+        commit(null);
+        renderAll();
+        toast('已刪除全部資料');
     }
 
     function moveEntry(id, delta) {
@@ -864,13 +902,34 @@ window.MacroApp = (function () {
         renderAll();
     }
 
-    function deleteMacro(entry, m, index) {
+    function skipMacroConfirm() {
+        try { return localStorage.getItem(LS_SKIP_MACRO_CONFIRM) === '1'; } catch (e) { return false; }
+    }
+
+    function setSkipMacroConfirm(skip) {
+        try {
+            if (skip) localStorage.setItem(LS_SKIP_MACRO_CONFIRM, '1');
+            else localStorage.removeItem(LS_SKIP_MACRO_CONFIRM);
+        } catch (e) { /* 忽略 */ }
+        renderSidebar();
+    }
+
+    async function deleteMacro(entry, m, index) {
         if (!requestLeaveEdit()) return;
-        if (confirm(`確定刪除「${macroLabel(m, index)}」？此動作無法復原。`)) {
-            entry.macros = entry.macros.filter(x => x.id !== m.id);
-            if (!entry.macros.length) entry.macros.push(newMacro());
-            commit(entry);
+        renderAll();
+        if (!skipMacroConfirm()) {
+            const opts = { title: '刪除巨集', checkboxLabel: '不再詢問' };
+            const key = await choose(`確定刪除「${macroLabel(m, index)}」？此動作無法復原。`, [
+                { key: 'delete', label: '刪除', kind: 'danger' },
+                { key: null, label: '取消' },
+            ], opts);
+            if (key !== 'delete') return;
+            if (opts.checked) setSkipMacroConfirm(true);
         }
+        if (!entry.macros.some(x => x.id === m.id)) return;
+        entry.macros = entry.macros.filter(x => x.id !== m.id);
+        if (!entry.macros.length) entry.macros.push(newMacro());
+        commit(entry);
         renderAll();
     }
 
@@ -1054,6 +1113,18 @@ window.MacroApp = (function () {
                     }),
                     delta => moveEntry(e.id, delta)) : null));
         });
+
+        // 清單下方：全部刪除、恢復「刪除巨集時詢問」
+        const footer = $('side-footer');
+        footer.replaceChildren();
+        if (!state.readOnly && state.data.entries.length) {
+            footer.append(h('button', { type: 'button', class: 'btn btn-danger btn-sm btn-block btn-icon', onclick: deleteAllEntries },
+                icon('trash'), '全部刪除'));
+        }
+        if (skipMacroConfirm()) {
+            footer.append(h('p', { class: 'storage-hint' }, '刪除巨集時不再詢問・',
+                h('button', { type: 'button', class: 'link-btn', onclick: () => setSkipMacroConfirm(false) }, '恢復詢問')));
+        }
 
         const selected = findEntry(state.selectedId);
         $('mobile-current').textContent = selected ? selected.title : '';
