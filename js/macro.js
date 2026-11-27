@@ -750,15 +750,18 @@ window.MacroApp = (function () {
     }
 
     function saveEdit() {
+        applyEdit();
+        renderAll();
+    }
+
+    // 把目前編輯中的內容寫回資料（不重繪）
+    function applyEdit() {
         const ed = state.editing;
         if (!ed) return;
         const entry = findEntry(ed.entryId);
         const v = readFields(ed);
         state.editing = null;
-        if (!entry) {
-            renderAll();
-            return;
-        }
+        if (!entry) return;
         let changed = false;
         if ('title' in v) {
             const title = v.title.trim() || DEFAULT_TITLE;
@@ -782,7 +785,6 @@ window.MacroApp = (function () {
             }
         }
         if (changed) commit(entry);
-        renderAll();
     }
 
     function cancelEdit() {
@@ -894,7 +896,17 @@ window.MacroApp = (function () {
     }
 
     function addMacro(entry) {
-        if (state.readOnly || !requestLeaveEdit()) return;
+        if (state.readOnly) return;
+        const ed = state.editing;
+        if (ed && ed.entryId === entry.id) {
+            // 同一筆資料編輯到一半又按「＋ 新增巨集」：視為要繼續編這筆，先把目前內容存起來，
+            // 不能走 requestLeaveEdit()，否則還沒存過的新資料會被當成放棄而整筆移除
+            if (ed.isNew || isEditDirty(ed)) applyEdit();
+            else discardEdit();
+        } else if (!requestLeaveEdit()) {
+            return;
+        }
+        if (!findEntry(entry.id)) return renderAll();
         const m = newMacro();
         entry.macros.push(m);
         commit(entry);
