@@ -705,14 +705,16 @@ window.CraftApp = (function () {
             }, `更新「${target.title}」`),
             h('span', { class: 'craft-hint' }, `取代這筆資料目前的 ${target.macros.length} 個巨集與備註，標題不變`)) : null;
 
-        box.append(
+        // 原生 append 會把 null 印成文字 "null"，所以先濾掉
+        box.append(...[
             h('h3', { class: 'section-title' }, '結果'),
             summary,
             options,
             ...blocks,
             h('details', { class: 'craft-steps-wrap' }, h('summary', null, `逐步明細（${o.steps.length} 步）`), table),
             updateRow,
-            h('div', { class: 'craft-import' }, titleInput, importBtn));
+            h('div', { class: 'craft-import' }, titleInput, importBtn),
+        ].filter(Boolean));
     }
 
     function renderRecalcBanner() {
