@@ -701,9 +701,9 @@ window.CraftApp = (function () {
         const updateRow = target ? h('div', { class: 'craft-update' },
             h('button', {
                 type: 'button', class: 'btn btn-primary', disabled: !macros.length,
-                onclick: () => M.updateEntryFromCraft(target.id, { macros: resultMacros(), craft: craftSnapshot(r) }),
+                onclick: () => M.updateEntryFromCraft(target.id, { macros: resultMacros(), note: noteText(r), craft: craftSnapshot(r) }),
             }, `更新「${target.title}」`),
-            h('span', { class: 'craft-hint' }, `取代這筆資料目前的 ${target.macros.length} 個巨集，標題與備註不變`)) : null;
+            h('span', { class: 'craft-hint' }, `取代這筆資料目前的 ${target.macros.length} 個巨集與備註，標題不變`)) : null;
 
         box.append(
             h('h3', { class: 'section-title' }, '結果'),

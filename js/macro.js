@@ -923,8 +923,8 @@ window.MacroApp = (function () {
         return true;
     }
 
-    // 重新計算後，以新結果取代既有資料的巨集與計算條件（標題、備註不動），回傳是否成功
-    async function updateEntryFromCraft(id, { macros, craft }) {
+    // 重新計算後，以新結果取代既有資料的巨集、備註與計算條件（標題不動），回傳是否成功
+    async function updateEntryFromCraft(id, { macros, note, craft }) {
         if (state.readOnly) {
             toast('目前為唯讀模式，無法更新');
             return false;
@@ -934,11 +934,12 @@ window.MacroApp = (function () {
             toast('找不到原本的資料，可能已被刪除');
             return false;
         }
-        const ok = await choose(`以新的計算結果取代「${entry.title}」的 ${entry.macros.length} 個巨集？原本的巨集內容會被覆蓋。`,
+        const ok = await choose(`以新的計算結果取代「${entry.title}」的 ${entry.macros.length} 個巨集與備註？原本的內容會被覆蓋。`,
             [{ key: 'replace', label: '取代', kind: 'primary' }, { key: 'cancel', label: '取消' }],
             { title: '更新巨集' });
         if (ok !== 'replace' || !findEntry(id) || !requestLeaveEdit()) return false;
         entry.macros = macrosFrom(macros);
+        if (note != null) entry.note = str(note).replace(/\s+$/, '');
         const c = normalizeCraft(craft);
         if (c) entry.craft = c;
         showEntry(entry);
