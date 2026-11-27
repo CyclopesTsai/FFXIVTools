@@ -129,7 +129,8 @@ window.MacroApp = (function () {
     // 線條圖示（stroke 跟著文字顏色），取代 ✎ / 🗑 emoji，各瀏覽器顯示一致
     const ICONS = {
         edit: ['M4 20h4L18.5 9.5a2.12 2.12 0 0 0-3-3L5 17v3z', 'M13.5 8.5l3 3'],
-        trash: ['M4 7h16', 'M9 7V4.5h6V7', 'M6.5 7l.9 12.1a2 2 0 0 0 2 1.9h5.2a2 2 0 0 0 2-1.9L17.5 7', 'M10 11v6', 'M14 11v6'],
+        refresh: ['M20 11a8 8 0 1 0-2.34 5.66', 'M20 4.5V11h-6.5'],
+        trash: ['M4 7h16','M9 7V4.5h6V7', 'M6.5 7l.9 12.1a2 2 0 0 0 2 1.9h5.2a2 2 0 0 0 2-1.9L17.5 7', 'M10 11v6', 'M14 11v6'],
     };
 
     function icon(name) {
@@ -216,7 +217,7 @@ window.MacroApp = (function () {
                     .filter(m => m && typeof m === 'object')
                     .map(m => ({ id: uniqueId(m.id), label: str(m.label), content: normalizeNewlines(m.content) }));
                 if (!macros.length) macros.push(newMacro());
-                return {
+                const entry = {
                     id: uniqueId(e.id),
                     title: str(e.title).trim() || DEFAULT_TITLE,
                     note: str(e.note),
@@ -225,11 +226,43 @@ window.MacroApp = (function () {
                     updatedAt: isoOr(e.updatedAt, createdAt),
                     macros,
                 };
+                const craft = normalizeCraft(e.craft);
+                if (craft) entry.craft = craft;
+                return entry;
             });
         normalizeOrders(entries);
         return {
             data: { app: APP_ID, version: readOnly ? version : DATA_VERSION, updatedAt: isoOr(raw.updatedAt, null), entries },
             readOnly,
+        };
+    }
+
+    // 生產巨集計算的條件（選填）：配方、目標、選項、計算時的角色數值；格式不對就丟掉
+    function normalizeCraft(c) {
+        if (!c || typeof c !== 'object' || Array.isArray(c)) return null;
+        const n = v => (Number.isInteger(v) && v >= 0 ? v : null);
+        const r = c.recipe || {};
+        const recipe = {
+            difficulty: n(r.difficulty),
+            durability: n(r.durability),
+            maxQuality: n(r.maxQuality),
+            initialQuality: n(r.initialQuality) ?? 0,
+        };
+        if (!recipe.difficulty || !recipe.durability || recipe.maxQuality == null) return null;
+        const o = c.options || {};
+        const st = c.stats || {};
+        return {
+            recipe,
+            target: n(c.target) ?? recipe.maxQuality,
+            options: { adversarial: o.adversarial === true, backload: o.backload === true, stellar: n(o.stellar) ?? 0 },
+            stats: {
+                level: n(st.level),
+                craftsmanship: n(st.craftsmanship),
+                control: n(st.control),
+                cp: n(st.cp),
+                specialist: st.specialist === true,
+                manipulation: st.manipulation === true,
+            },
         };
     }
 
@@ -847,27 +880,13 @@ window.MacroApp = (function () {
         renderAll();
     }
 
-    // 從計算結果建立一筆新資料（放在清單最上面），回傳是否成功
-    function importEntry({ title, note, macros }) {
-        if (state.readOnly) {
-            toast('目前為唯讀模式，無法匯入');
-            return false;
-        }
-        if (!requestLeaveEdit()) return false;
-        const now = nowIso();
+    function macrosFrom(macros) {
         const list = (Array.isArray(macros) ? macros : [])
             .map(m => ({ id: newId(), label: str(m.label).trim(), content: normalizeNewlines(m.content) }));
-        const entry = {
-            id: newId(),
-            title: str(title).trim() || DEFAULT_TITLE,
-            note: str(note).replace(/\s+$/, ''),
-            order: -1,
-            createdAt: now,
-            updatedAt: now,
-            macros: list.length ? list : [newMacro()],
-        };
-        state.data.entries.push(entry);
-        normalizeOrders(state.data.entries);
+        return list.length ? list : [newMacro()];
+    }
+
+    function showEntry(entry) {
         state.selectedId = entry.id;
         state.view = 'list';
         state.filter = '';
@@ -876,8 +895,60 @@ window.MacroApp = (function () {
         saveLastSelected();
         commit(entry);
         renderAll();
+    }
+
+    // 從計算結果建立一筆新資料（放在清單最上面），回傳是否成功
+    function importEntry({ title, note, macros, craft }) {
+        if (state.readOnly) {
+            toast('目前為唯讀模式，無法匯入');
+            return false;
+        }
+        if (!requestLeaveEdit()) return false;
+        const now = nowIso();
+        const entry = {
+            id: newId(),
+            title: str(title).trim() || DEFAULT_TITLE,
+            note: str(note).replace(/\s+$/, ''),
+            order: -1,
+            createdAt: now,
+            updatedAt: now,
+            macros: macrosFrom(macros),
+        };
+        const c = normalizeCraft(craft);
+        if (c) entry.craft = c;
+        state.data.entries.push(entry);
+        normalizeOrders(state.data.entries);
+        showEntry(entry);
         toast(`已匯入「${entry.title}」`);
         return true;
+    }
+
+    // 重新計算後，以新結果取代既有資料的巨集與計算條件（標題、備註不動），回傳是否成功
+    async function updateEntryFromCraft(id, { macros, craft }) {
+        if (state.readOnly) {
+            toast('目前為唯讀模式，無法更新');
+            return false;
+        }
+        const entry = findEntry(id);
+        if (!entry) {
+            toast('找不到原本的資料，可能已被刪除');
+            return false;
+        }
+        const ok = await choose(`以新的計算結果取代「${entry.title}」的 ${entry.macros.length} 個巨集？原本的巨集內容會被覆蓋。`,
+            [{ key: 'replace', label: '取代', kind: 'primary' }, { key: 'cancel', label: '取消' }],
+            { title: '更新巨集' });
+        if (ok !== 'replace' || !findEntry(id) || !requestLeaveEdit()) return false;
+        entry.macros = macrosFrom(macros);
+        const c = normalizeCraft(craft);
+        if (c) entry.craft = c;
+        showEntry(entry);
+        toast(`已更新「${entry.title}」`);
+        return true;
+    }
+
+    function recalcEntry(entry) {
+        if (!entry.craft || !window.CraftApp || !requestLeaveEdit()) return;
+        window.CraftApp.recalc(entry);
     }
 
     // 移除一筆資料並選取清單中相鄰的下一筆
@@ -1321,10 +1392,29 @@ window.MacroApp = (function () {
         return h('div', { class: 'entry-header' },
             h('div', { class: 'entry-head-main' },
                 h('h2', { class: 'entry-title' }, entry.title),
-                entry.note.trim() ? h('p', { class: 'entry-note' }, entry.note) : null),
+                entry.note.trim() ? h('p', { class: 'entry-note' }, entry.note) : null,
+                entry.craft ? renderCraftInfo(entry.craft) : null),
             state.readOnly ? null : h('div', { class: 'entry-actions' },
+                entry.craft && window.CraftApp
+                    ? h('button', { type: 'button', class: 'btn btn-secondary btn-sm btn-icon', title: '以目前的角色數值重新計算', onclick: () => recalcEntry(entry) }, icon('refresh'), '重新計算')
+                    : null,
                 h('button', { type: 'button', class: 'btn btn-secondary btn-sm btn-icon', onclick: () => startEdit({ entryId: entry.id, header: true, macroId: null, autofocus: 'title' }) }, icon('edit'), '編輯'),
                 h('button', { type: 'button', class: 'btn btn-danger btn-sm btn-icon', onclick: () => deleteEntry(entry) }, icon('trash'), '刪除')));
+    }
+
+    // 生產巨集的計算條件（來自 entry.craft）；角色數值與計算器目前的不同時提示可重新計算
+    function renderCraftInfo(c) {
+        const r = c.recipe, st = c.stats;
+        const statText = st.craftsmanship != null
+            ? `計算時：Lv${st.level}・作業精度 ${st.craftsmanship}・加工精度 ${st.control}・CP ${st.cp}`
+            : '';
+        const current = window.CraftApp && window.CraftApp.currentStats();
+        const outdated = !!(current && st.craftsmanship != null && ['level', 'craftsmanship', 'control', 'cp']
+            .some(k => current[k] != null && current[k] !== st[k]));
+        return h('div', { class: 'craft-entry-info' },
+            h('div', null, `⚗ 生產巨集・難度 ${r.difficulty}・耐久 ${r.durability}・最高品質 ${r.maxQuality}・目標品質 ${c.target}`),
+            statText ? h('div', { class: 'craft-entry-stats' }, statText) : null,
+            outdated ? h('div', { class: 'craft-entry-outdated' }, '角色數值已更新，可重新計算') : null);
     }
 
     function renderBlock(entry, m, index, section) {
@@ -1480,7 +1570,11 @@ window.MacroApp = (function () {
             renderSidebar();
         });
         $('add-entry').addEventListener('click', addEntry);
-        $('open-craft').addEventListener('click', openCraft);
+        $('open-craft').addEventListener('click', () => {
+            // 從側欄進入是一般計算，不是重新計算某筆資料
+            if (window.CraftApp) window.CraftApp.clearRecalc();
+            openCraft();
+        });
         $('menu-toggle').addEventListener('click', () => setMenuOpen(!state.menuOpen));
 
         window.addEventListener('beforeunload', e => {
@@ -1513,5 +1607,5 @@ window.MacroApp = (function () {
     else init();
 
     // 給 js/craft.js 共用
-    return { state, h, toast, copyWithFeedback, lineCount, importEntry, openCraft, closeCraft };
+    return { state, h, toast, copyWithFeedback, lineCount, findEntry, importEntry, updateEntryFromCraft, openCraft, closeCraft };
 })();

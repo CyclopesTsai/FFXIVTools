@@ -974,6 +974,44 @@ body.is-dragging * {
 
 .craft-credit a { color: inherit; }
 
+.craft-recalc-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 10px;
+    margin-bottom: 14px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(184, 134, 11, 0.5);
+    background: rgba(184, 134, 11, 0.1);
+    font-size: 13px;
+    color: var(--brown);
+}
+
+.craft-recalc-banner[hidden] { display: none; }
+
+.craft-update {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    padding-top: 12px;
+    margin-bottom: 10px;
+    border-top: 1px dashed var(--border);
+}
+
+.craft-update + .craft-import { border-top: 0; padding-top: 0; }
+
+.craft-entry-info {
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--brown);
+}
+
+.craft-entry-stats { color: var(--muted); }
+.craft-entry-outdated { color: #b7791f; font-weight: 700; }
+
 .craft-error-detail { margin-top: 6px; }
 .craft-error-detail pre { white-space: pre-wrap; word-break: break-all; font-size: 12px; margin: 6px 0 0; }
 

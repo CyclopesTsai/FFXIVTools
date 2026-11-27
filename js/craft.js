@@ -65,6 +65,7 @@ window.CraftApp = (function () {
         id: 0,
         startedAt: 0,
         timer: null,
+        recalc: null,        // 重新計算模式：{ entryId }；從側欄進入時為 null
     };
     let ui = null;
 
@@ -271,7 +272,7 @@ window.CraftApp = (function () {
         }
         run.id++;
         run.status = 'running';
-        run.pending = job;
+        run.pending = { ...job, recalcEntryId: run.recalc ? run.recalc.entryId : null };
         run.startedAt = performance.now();
         clearInterval(run.timer);
         run.timer = setInterval(renderStatusLine, 1000);
@@ -279,13 +280,13 @@ window.CraftApp = (function () {
         renderControls();
     }
 
-    function cancel() {
+    function cancel(silent) {
         if (run.worker) run.worker.terminate();
         run.worker = null;
         clearInterval(run.timer);
         run.status = run.result ? 'done' : 'idle';
         run.pending = null;
-        M.toast('已取消計算');
+        if (!silent) M.toast('已取消計算');
         renderControls();
         renderResult();
     }
@@ -305,7 +306,7 @@ window.CraftApp = (function () {
             return;
         }
         run.status = 'done';
-        run.result = { input: job.input, ctx: job.ctx, output: out, title: '' };
+        run.result = { input: job.input, ctx: job.ctx, output: out, title: '', recalcEntryId: job.recalcEntryId };
         run.error = '';
         renderControls();
         renderResult();
@@ -383,12 +384,14 @@ window.CraftApp = (function () {
         const computeBtn = h('button', { type: 'button', class: 'btn btn-primary craft-compute', onclick: compute }, '計算');
         const statusLine = h('div', { class: 'craft-status', role: 'status' });
         const result = h('div', { class: 'craft-result' });
+        const recalcBanner = h('div', { class: 'craft-recalc-banner', hidden: true });
 
         const node = h('div', { class: 'craft' },
             h('div', { class: 'craft-header' },
                 h('button', { type: 'button', class: 'btn btn-secondary btn-sm', onclick: () => M.closeCraft() }, '← 返回巨集'),
                 h('h2', { class: 'entry-title' }, '生產巨集計算 ', h('span', { class: 'beta-badge' }, 'BETA'))),
             h('p', { class: 'craft-beta-note' }, '此功能仍在測試中，計算結果與技能名稱尚未在繁中服完整驗證，使用前請先確認。'),
+            recalcBanner,
             h('div', { class: 'craft-cards' },
                 h('section', { class: 'craft-card' },
                     h('h3', { class: 'section-title' }, '角色'),
@@ -418,7 +421,7 @@ window.CraftApp = (function () {
                 h('a', { href: 'https://github.com/xivapi/ffxiv-datamining', target: '_blank', rel: 'noopener' }, 'xivapi/ffxiv-datamining'),
                 '・遊戲資料 © SQUARE ENIX'));
 
-        ui = { node, inputs, targetInput, targetHint, recog, manual, computeBtn, statusLine, result };
+        ui = { node, inputs, targetInput, targetHint, recog, manual, computeBtn, statusLine, result, recalcBanner };
     }
 
     function changed() {
@@ -444,6 +447,7 @@ window.CraftApp = (function () {
         ui.targetHint.textContent = Number.isFinite(mq) && Number.isFinite(t) && !tErr
             ? (t === 0 ? '只完成製作，不加品質' : `${t} / ${mq}`)
             : '';
+        renderRecalcBanner();
         renderRecognition();
         renderManual();
         renderControls();
@@ -567,6 +571,7 @@ window.CraftApp = (function () {
 
     function defaultTitle(ctx) { return `生產：難度${ctx.difficulty}／品質${ctx.target}`; }
 
+    // 匯入時寫進備註的說明文字（只給人看；重新計算用的是 entry.craft）
     function noteText(r) {
         const c = r.ctx, o = r.output;
         return [
@@ -574,6 +579,29 @@ window.CraftApp = (function () {
             `難度 ${c.difficulty}　耐久 ${c.durability}　最高品質 ${c.maxQuality}　初期品質 ${c.initialQuality}　目標品質 ${c.target}`,
             `${o.steps.length} 步・約 ${o.durationSec} 秒${c.manual ? '・手動係數' : ''}`,
         ].join('\n');
+    }
+
+    // 存進巨集資料的計算條件（entry.craft），重新計算時從這裡帶回配方與目標
+    function craftSnapshot(r) {
+        const c = r.ctx, i = r.input;
+        return {
+            recipe: { difficulty: c.difficulty, durability: c.durability, maxQuality: c.maxQuality, initialQuality: c.initialQuality },
+            target: c.target,
+            options: { adversarial: i.adversarial, backload: i.backloadProgress, stellar: i.stellarSteadyHandCharges },
+            stats: {
+                level: c.level, craftsmanship: c.craftsmanship, control: c.control, cp: c.cp,
+                specialist: i.allowHeartAndSoul, manipulation: i.allowManipulation,
+            },
+        };
+    }
+
+    function resultMacros() {
+        return currentMacros().map((content, i) => ({ label: `巨集 ${i + 1}`, content }));
+    }
+
+    function recalcEntry() {
+        const id = run.recalc && run.recalc.entryId;
+        return id ? M.findEntry(id) : null;
     }
 
     function renderResult() {
@@ -655,18 +683,27 @@ window.CraftApp = (function () {
                 h('td', null, String(st.durability)),
                 h('td', null, String(st.cp))))));
 
+        // 重新計算某筆資料時：主要動作是更新那筆；另外仍可匯入成新資料
+        const target = r.recalcEntryId ? M.findEntry(r.recalcEntryId) : null;
         const titleInput = h('input', {
             type: 'text', class: 'input craft-title-input', value: r.title, placeholder: defaultTitle(c), 'aria-label': '匯入標題',
         });
         titleInput.addEventListener('input', () => { r.title = titleInput.value; });
         const importBtn = h('button', {
-            type: 'button', class: 'btn btn-primary', disabled: !macros.length,
+            type: 'button', class: target ? 'btn btn-secondary' : 'btn btn-primary', disabled: !macros.length,
             onclick: () => M.importEntry({
                 title: r.title.trim() || defaultTitle(c),
                 note: noteText(r),
-                macros: currentMacros().map((content, i) => ({ label: `巨集 ${i + 1}`, content })),
+                macros: resultMacros(),
+                craft: craftSnapshot(r),
             }),
-        }, '匯入巨集管理');
+        }, target ? '匯入為新資料' : '匯入巨集管理');
+        const updateRow = target ? h('div', { class: 'craft-update' },
+            h('button', {
+                type: 'button', class: 'btn btn-primary', disabled: !macros.length,
+                onclick: () => M.updateEntryFromCraft(target.id, { macros: resultMacros(), craft: craftSnapshot(r) }),
+            }, `更新「${target.title}」`),
+            h('span', { class: 'craft-hint' }, `取代這筆資料目前的 ${target.macros.length} 個巨集，標題與備註不變`)) : null;
 
         box.append(
             h('h3', { class: 'section-title' }, '結果'),
@@ -674,7 +711,18 @@ window.CraftApp = (function () {
             options,
             ...blocks,
             h('details', { class: 'craft-steps-wrap' }, h('summary', null, `逐步明細（${o.steps.length} 步）`), table),
+            updateRow,
             h('div', { class: 'craft-import' }, titleInput, importBtn));
+    }
+
+    function renderRecalcBanner() {
+        const entry = recalcEntry();
+        ui.recalcBanner.hidden = !entry;
+        ui.recalcBanner.replaceChildren();
+        if (!entry) return;
+        ui.recalcBanner.append(
+            h('span', null, `重新計算「${entry.title}」：配方與目標已帶入，角色數值使用目前的設定。`),
+            h('button', { type: 'button', class: 'link-btn', onclick: clearRecalc }, '改為一般計算'));
     }
 
     // ---------- 對外 ----------
@@ -685,5 +733,46 @@ window.CraftApp = (function () {
         refresh();
     }
 
-    return { mount };
+    // 以某筆資料存下的配方與目標重新計算；角色數值沿用計算器目前的設定
+    function recalc(entry) {
+        const c = entry && entry.craft;
+        if (!c) return;
+        if (run.status === 'running') cancel(true);
+        const v = s.values;
+        v.difficulty = String(c.recipe.difficulty);
+        v.durability = String(c.recipe.durability);
+        v.maxQuality = String(c.recipe.maxQuality);
+        v.initialQuality = String(c.recipe.initialQuality);
+        s.targetAuto = c.target === c.recipe.maxQuality;
+        s.targetQuality = s.targetAuto ? '' : String(c.target);
+        s.adversarial = c.options.adversarial;
+        s.backload = c.options.backload;
+        s.stellar = String(c.options.stellar);
+        save();
+        run.recalc = { entryId: entry.id };
+        run.result = null;
+        run.status = 'idle';
+        run.error = '';
+        ui = null; // 欄位值改了，重建畫面
+        M.openCraft();
+        // 數值齊全就直接開始算；缺角色數值時停在畫面上讓使用者補
+        if (!blockers().length) compute();
+    }
+
+    function clearRecalc() {
+        if (!run.recalc) return;
+        run.recalc = null;
+        if (ui) refresh();
+    }
+
+    function currentStats() {
+        const out = {};
+        for (const f of CHAR_FIELDS) {
+            const n = num(f.key);
+            out[f.key] = Number.isFinite(n) ? n : null;
+        }
+        return out;
+    }
+
+    return { mount, recalc, clearRecalc, currentStats };
 })();
