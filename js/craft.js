@@ -10,6 +10,8 @@ window.CraftApp = (function () {
     const h = M.h;
 
     const LS_KEY = 'ffxiv-macro:craft';
+    // 設定格式版本：2 起「已學會掌握」預設不勾，舊版存下的預設值不沿用
+    const SETTINGS_VERSION = 2;
     const WORKER_VERSION = (document.currentScript && document.currentScript.dataset.workerVersion) || '1';
     const LONG_RUN_SEC = 60;
 
@@ -40,7 +42,7 @@ window.CraftApp = (function () {
     const defaults = () => ({
         values: { level: '100', craftsmanship: '', control: '', cp: '', difficulty: '', durability: '', maxQuality: '', initialQuality: '0' },
         specialist: false,
-        manipulation: true,
+        manipulation: false,
         targetAuto: true,
         targetQuality: '',
         adversarial: false,
@@ -72,7 +74,9 @@ window.CraftApp = (function () {
             const raw = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
             if (raw && typeof raw === 'object') {
                 Object.assign(d.values, pickStrings(raw.values, Object.keys(d.values)));
-                for (const k of ['specialist', 'manipulation', 'targetAuto', 'adversarial', 'backload']) {
+                const keys = ['specialist', 'targetAuto', 'adversarial', 'backload'];
+                if (raw.v >= SETTINGS_VERSION) keys.push('manipulation');
+                for (const k of keys) {
                     if (typeof raw[k] === 'boolean') d[k] = raw[k];
                 }
                 for (const k of ['targetQuality', 'stellar', 'manualCoef', 'measuredSynth', 'measuredTouch']) {
@@ -98,7 +102,7 @@ window.CraftApp = (function () {
     }
 
     function save() {
-        try { localStorage.setItem(LS_KEY, JSON.stringify(s)); } catch (e) { /* 無法儲存就算了 */ }
+        try { localStorage.setItem(LS_KEY, JSON.stringify({ ...s, v: SETTINGS_VERSION })); } catch (e) { /* 無法儲存就算了 */ }
     }
 
     // ---------- 計算輸入 ----------
