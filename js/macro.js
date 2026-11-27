@@ -9,7 +9,11 @@ window.MacroApp = (function () {
     const FILE_NAME = 'ff14-macros.json';
     const LS_DATA = 'ffxiv-macro:data';
     const LS_LAST = 'ffxiv-macro:lastSelected';
-    const LS_SKIP_MACRO_CONFIRM = 'ffxiv-macro:skipDeleteMacroConfirm';
+    // 刪除時「不再詢問」的設定（各自獨立）
+    const LS_SKIP_CONFIRM = {
+        macro: 'ffxiv-macro:skipDeleteMacroConfirm',
+        entry: 'ffxiv-macro:skipDeleteEntryConfirm',
+    };
     const IDB_NAME = 'ffxiv-macro';
     const IDB_STORE = 'handles';
     const IDB_KEY = 'dir';
@@ -839,11 +843,7 @@ window.MacroApp = (function () {
         if (!requestLeaveEdit()) return;
         renderAll();
         if (!findEntry(entry.id)) return;
-        const key = await choose(`確定刪除「${entry.title}」？此動作無法復原。`, [
-            { key: 'delete', label: '刪除', kind: 'danger' },
-            { key: null, label: '取消' },
-        ], { title: '刪除資料' });
-        if (key !== 'delete' || !findEntry(entry.id)) return;
+        if (!(await confirmDelete('entry', '刪除資料', entry.title)) || !findEntry(entry.id)) return;
         removeEntry(entry);
         renderAll();
     }
@@ -902,30 +902,35 @@ window.MacroApp = (function () {
         renderAll();
     }
 
-    function skipMacroConfirm() {
-        try { return localStorage.getItem(LS_SKIP_MACRO_CONFIRM) === '1'; } catch (e) { return false; }
+    function skipConfirm(kind) {
+        try { return localStorage.getItem(LS_SKIP_CONFIRM[kind]) === '1'; } catch (e) { return false; }
     }
 
-    function setSkipMacroConfirm(skip) {
+    function setSkipConfirm(kind, skip) {
         try {
-            if (skip) localStorage.setItem(LS_SKIP_MACRO_CONFIRM, '1');
-            else localStorage.removeItem(LS_SKIP_MACRO_CONFIRM);
+            if (skip) localStorage.setItem(LS_SKIP_CONFIRM[kind], '1');
+            else localStorage.removeItem(LS_SKIP_CONFIRM[kind]);
         } catch (e) { /* 忽略 */ }
         renderSidebar();
+    }
+
+    // 刪除確認（可勾「不再詢問」）；確定刪除回傳 true
+    async function confirmDelete(kind, title, name) {
+        if (skipConfirm(kind)) return true;
+        const opts = { title, checkboxLabel: '不再詢問' };
+        const key = await choose(`確定刪除「${name}」？此動作無法復原。`, [
+            { key: 'delete', label: '刪除', kind: 'danger' },
+            { key: null, label: '取消' },
+        ], opts);
+        if (key !== 'delete') return false;
+        if (opts.checked) setSkipConfirm(kind, true);
+        return true;
     }
 
     async function deleteMacro(entry, m, index) {
         if (!requestLeaveEdit()) return;
         renderAll();
-        if (!skipMacroConfirm()) {
-            const opts = { title: '刪除巨集', checkboxLabel: '不再詢問' };
-            const key = await choose(`確定刪除「${macroLabel(m, index)}」？此動作無法復原。`, [
-                { key: 'delete', label: '刪除', kind: 'danger' },
-                { key: null, label: '取消' },
-            ], opts);
-            if (key !== 'delete') return;
-            if (opts.checked) setSkipMacroConfirm(true);
-        }
+        if (!(await confirmDelete('macro', '刪除巨集', macroLabel(m, index)))) return;
         if (!entry.macros.some(x => x.id === m.id)) return;
         entry.macros = entry.macros.filter(x => x.id !== m.id);
         if (!entry.macros.length) entry.macros.push(newMacro());
@@ -1121,9 +1126,14 @@ window.MacroApp = (function () {
             footer.append(h('button', { type: 'button', class: 'btn btn-danger btn-sm btn-block btn-icon', onclick: deleteAllEntries },
                 icon('trash'), '全部刪除'));
         }
-        if (skipMacroConfirm()) {
-            footer.append(h('p', { class: 'storage-hint' }, '刪除巨集時不再詢問・',
-                h('button', { type: 'button', class: 'link-btn', onclick: () => setSkipMacroConfirm(false) }, '恢復詢問')));
+        // 「全部刪除」一定會詢問，不受這裡影響
+        const skipped = [['entry', '資料'], ['macro', '巨集']].filter(([k]) => skipConfirm(k));
+        if (skipped.length) {
+            footer.append(h('p', { class: 'storage-hint' }, `刪除${skipped.map(([, n]) => n).join('、')}時不再詢問・`,
+                h('button', {
+                    type: 'button', class: 'link-btn',
+                    onclick: () => skipped.forEach(([k]) => setSkipConfirm(k, false)),
+                }, '恢復詢問')));
         }
 
         const selected = findEntry(state.selectedId);
