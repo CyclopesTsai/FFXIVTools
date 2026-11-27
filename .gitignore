@@ -21,3 +21,6 @@ Desktop.ini
 
 # AI
 .claude
+
+# Docs (local only)
+doc/
