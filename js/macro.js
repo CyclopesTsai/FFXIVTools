@@ -35,6 +35,7 @@ window.MacroApp = (function () {
         saveStatus: 'saved',   // saved | saving | error
         saveError: '',
         menuOpen: false,
+        view: 'list',          // list：巨集檢視 | craft：生產巨集計算
     };
 
     // 寫檔排程：changeSeq 每次變更 +1，writtenSeq 記錄已寫入資料夾的版本
@@ -801,13 +802,14 @@ window.MacroApp = (function () {
     // ----- 資料 -----
 
     function selectEntry(id) {
-        if (id === state.selectedId) {
+        if (id === state.selectedId && state.view === 'list') {
             setMenuOpen(false);
             return;
         }
         if (!requestLeaveEdit()) return;
         if (!findEntry(id)) { renderAll(); return; } // 被放棄的新資料
         state.selectedId = id;
+        state.view = 'list';
         state.menuOpen = false;
         saveLastSelected();
         renderAll();
@@ -820,6 +822,7 @@ window.MacroApp = (function () {
         state.data.entries.push(entry);
         normalizeOrders(state.data.entries);
         state.selectedId = entry.id;
+        state.view = 'list';
         state.filter = '';
         $('search').value = '';
         state.menuOpen = false;
@@ -827,6 +830,54 @@ window.MacroApp = (function () {
         commit(entry);
         state.editing = { entryId: entry.id, header: true, macroId: entry.macros[0].id, isNew: true, autofocus: 'title' };
         renderAll();
+    }
+
+    // ----- 生產巨集計算（畫面由 js/craft.js 的 CraftApp 負責）-----
+
+    function openCraft() {
+        if (state.view === 'craft') { setMenuOpen(false); return; }
+        if (!requestLeaveEdit()) return;
+        state.view = 'craft';
+        state.menuOpen = false;
+        renderAll();
+    }
+
+    function closeCraft() {
+        state.view = 'list';
+        renderAll();
+    }
+
+    // 從計算結果建立一筆新資料（放在清單最上面），回傳是否成功
+    function importEntry({ title, note, macros }) {
+        if (state.readOnly) {
+            toast('目前為唯讀模式，無法匯入');
+            return false;
+        }
+        if (!requestLeaveEdit()) return false;
+        const now = nowIso();
+        const list = (Array.isArray(macros) ? macros : [])
+            .map(m => ({ id: newId(), label: str(m.label).trim(), content: normalizeNewlines(m.content) }));
+        const entry = {
+            id: newId(),
+            title: str(title).trim() || DEFAULT_TITLE,
+            note: str(note).replace(/\s+$/, ''),
+            order: -1,
+            createdAt: now,
+            updatedAt: now,
+            macros: list.length ? list : [newMacro()],
+        };
+        state.data.entries.push(entry);
+        normalizeOrders(state.data.entries);
+        state.selectedId = entry.id;
+        state.view = 'list';
+        state.filter = '';
+        $('search').value = '';
+        state.menuOpen = false;
+        saveLastSelected();
+        commit(entry);
+        renderAll();
+        toast(`已匯入「${entry.title}」`);
+        return true;
     }
 
     // 移除一筆資料並選取清單中相鄰的下一筆
@@ -1110,7 +1161,7 @@ window.MacroApp = (function () {
         // 搜尋中只顯示部分資料，排序會有歧義，所以不提供拖曳
         const canSort = !state.readOnly && !isFiltering() && items.length > 1;
         items.forEach(e => {
-            const active = e.id === state.selectedId;
+            const active = state.view === 'list' && e.id === state.selectedId;
             list.append(h('li', { class: 'entry-row' + (canSort ? ' sortable' : ''), 'data-id': e.id },
                 h('button', {
                     type: 'button',
@@ -1149,8 +1200,12 @@ window.MacroApp = (function () {
         }
 
         const selected = findEntry(state.selectedId);
-        $('mobile-current').textContent = selected ? selected.title : '';
+        const crafting = state.view === 'craft';
+        $('mobile-current').textContent = crafting ? '生產巨集計算' : (selected ? selected.title : '');
         $('add-entry').disabled = state.readOnly;
+        const craftBtn = $('open-craft');
+        craftBtn.classList.toggle('active', crafting);
+        craftBtn.setAttribute('aria-current', crafting ? 'true' : 'false');
         $('side-panel').classList.toggle('open', state.menuOpen);
         const toggle = $('menu-toggle');
         toggle.textContent = state.menuOpen ? '清單 ▴' : '清單 ▾';
@@ -1169,6 +1224,15 @@ window.MacroApp = (function () {
 
         if (state.readOnly) {
             root.append(h('div', { class: 'notice' }, '檔案版本較新，請更新頁面。目前以唯讀方式顯示，不會寫回。'));
+        }
+
+        if (state.view === 'craft') {
+            // CraftApp 的畫面只建立一次，重繪時搬回來即可（保留輸入框內容與焦點）
+            const active = document.activeElement;
+            if (window.CraftApp) window.CraftApp.mount(root);
+            else root.append(h('div', { class: 'notice' }, '生產巨集計算載入失敗，請重新整理頁面。'));
+            if (active && active !== document.body && active.isConnected && document.activeElement !== active) active.focus();
+            return;
         }
 
         if (!state.data.entries.length) {
@@ -1416,6 +1480,7 @@ window.MacroApp = (function () {
             renderSidebar();
         });
         $('add-entry').addEventListener('click', addEntry);
+        $('open-craft').addEventListener('click', openCraft);
         $('menu-toggle').addEventListener('click', () => setMenuOpen(!state.menuOpen));
 
         window.addEventListener('beforeunload', e => {
@@ -1447,5 +1512,6 @@ window.MacroApp = (function () {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
     else init();
 
-    return { state };
+    // 給 js/craft.js 共用
+    return { state, h, toast, copyWithFeedback, lineCount, importEntry, openCraft, closeCraft };
 })();

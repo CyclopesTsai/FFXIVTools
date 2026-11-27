@@ -717,6 +717,266 @@ body.is-dragging * {
     pointer-events: none;
 }
 
+/* ---------- 生產巨集計算 ---------- */
+
+.beta-badge {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    padding: 3px 5px;
+    border-radius: 4px;
+    background: var(--gold);
+    color: #fff;
+}
+
+.entry-title .beta-badge { font-size: 11px; margin-left: 2px; position: relative; top: -2px; }
+
+.craft-beta-note {
+    margin: -6px 0 14px;
+    font-size: 12px;
+    color: #b7791f;
+}
+
+.craft-entry-btn.active {
+    background: var(--brown);
+    border-color: var(--brown);
+    color: var(--paper-bg);
+}
+
+.craft-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+    border-bottom: 1px dashed var(--border);
+}
+
+.craft-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.craft-card,
+.craft-manual {
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    min-width: 0;
+}
+
+.craft-manual { margin-bottom: 14px; }
+.craft-manual[hidden] { display: none; }
+
+.craft-field {
+    display: grid;
+    grid-template-columns: 6.5em minmax(0, 1fr);
+    align-items: center;
+    gap: 4px 10px;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.craft-field-label { color: var(--heading); }
+.craft-field > small { grid-column: 2; }
+
+.craft-input { font-variant-numeric: tabular-nums; padding: 6px 10px; }
+.craft-input.invalid { border-color: var(--danger); box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.12); }
+.craft-input-sm { max-width: 6em; }
+
+.craft-select {
+    display: inline-block;
+    width: auto;
+    padding: 5px 8px;
+}
+
+.craft-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    margin: 6px 0;
+    cursor: pointer;
+}
+
+.craft-check input { margin: 3px 0 0; width: 15px; height: 15px; accent-color: var(--brown); flex-shrink: 0; }
+.craft-check small { display: block; color: var(--muted); font-size: 12px; }
+
+.craft-hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 8px 0 0;
+}
+
+.craft-recog {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px dashed var(--border);
+    font-size: 13px;
+}
+
+.craft-recog small { font-size: 12px; color: var(--brown); }
+.craft-recog.ok { border-style: solid; border-color: rgba(47, 133, 90, 0.45); background: rgba(47, 133, 90, 0.07); }
+.craft-recog.ok strong { color: #2f855a; }
+.craft-recog.warn { border-style: solid; border-color: rgba(183, 121, 31, 0.5); background: rgba(183, 121, 31, 0.08); }
+.craft-recog.warn strong { color: #b7791f; }
+
+.craft-manual-body { margin: 0 0 8px 23px; }
+.craft-manual-body .craft-select { max-width: 100%; }
+.craft-manual-measure .craft-field { grid-template-columns: 10em minmax(0, 1fr); }
+
+.craft-target-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 12px;
+}
+
+.craft-target-row .craft-field { margin-bottom: 0; min-width: 240px; }
+.craft-target-row .craft-hint { margin: 0; }
+
+.craft-advanced { margin-top: 10px; font-size: 14px; }
+.craft-advanced > summary { cursor: pointer; color: var(--brown); }
+.craft-advanced[open] > summary { margin-bottom: 6px; }
+.craft-advanced .craft-field { grid-template-columns: 13em minmax(0, 6em); }
+.craft-advanced .craft-field > small { grid-column: 1 / -1; margin: 0; }
+
+.craft-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    margin: 18px 0;
+}
+
+.craft-compute { min-width: 120px; font-size: 15px; padding: 9px 20px; }
+
+.craft-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    font-size: 14px;
+    color: var(--brown);
+}
+
+.craft-status small { flex-basis: 100%; color: var(--muted); }
+.craft-status .craft-hint { margin: 0; flex-basis: auto; }
+
+.craft-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: craft-spin 0.8s linear infinite;
+}
+
+@keyframes craft-spin { to { transform: rotate(360deg); } }
+
+.craft-summary {
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+}
+
+.craft-summary-main { font-weight: 700; color: var(--heading); }
+
+.craft-summary-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    margin-top: 4px;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+}
+
+.craft-summary-stats .ok { color: #2f855a; }
+.craft-summary-stats .bad { color: var(--danger); }
+.craft-summary-warn { margin: 6px 0 0; font-size: 13px; color: #b7791f; }
+.craft-summary-warn[hidden] { display: none; }
+
+.craft-export-opts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.craft-export-opts .craft-check { margin: 0; align-items: center; }
+.craft-export-opts .craft-check input { margin: 0; }
+
+.craft-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.craft-lines {
+    font-size: 12px;
+    color: rgba(248, 241, 229, 0.6);
+    font-variant-numeric: tabular-nums;
+}
+
+.craft-steps-wrap { margin: 4px 0 14px; font-size: 14px; }
+.craft-steps-wrap > summary { cursor: pointer; color: var(--brown); }
+
+.craft-steps {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+}
+
+.craft-steps th,
+.craft-steps td {
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+}
+
+.craft-steps th:nth-child(2),
+.craft-steps td:nth-child(2) { text-align: left; }
+.craft-steps th { color: var(--heading); font-weight: 700; }
+
+.craft-import {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+}
+
+.craft-import .input { flex: 1; min-width: 0; }
+.craft-import .btn { flex-shrink: 0; }
+
+.craft-credit {
+    margin: 20px 0 0;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+}
+
+.craft-credit a { color: inherit; }
+
+.craft-error-detail { margin-top: 6px; }
+.craft-error-detail pre { white-space: pre-wrap; word-break: break-all; font-size: 12px; margin: 6px 0 0; }
+
 /* ---------- 窄螢幕：單欄，清單收合到頂部 ---------- */
 
 @media (max-width: 759px) {
@@ -767,4 +1027,12 @@ body.is-dragging * {
 
     .entry-header { flex-direction: column; }
     .entry-actions { align-self: flex-end; }
+
+    .craft-cards { grid-template-columns: minmax(0, 1fr); }
+    .craft-header { flex-wrap: wrap; }
+    .craft-target-row .craft-field { min-width: 0; flex: 1; }
+    .craft-advanced .craft-field { grid-template-columns: minmax(0, 1fr) 6em; }
+    .craft-import { flex-direction: column; align-items: stretch; }
+    .craft-steps th, .craft-steps td { padding: 4px 5px; }
+    .craft-input, .craft-select { font-size: 16px; }
 }

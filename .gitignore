@@ -24,3 +24,6 @@ Desktop.ini
 
 # Docs (local only)
 doc/
+
+# Rust build output
+tools/craft-solver/target/
